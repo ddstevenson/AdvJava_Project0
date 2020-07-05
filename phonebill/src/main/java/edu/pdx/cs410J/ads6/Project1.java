@@ -6,11 +6,14 @@ package edu.pdx.cs410J.ads6;
 public class Project1 {
 
   public static void main(String[] args) {
-    IValidator val = new Validator(args);
-    val.validate();
-    PhoneCall call = new PhoneCall(args); // won't work - date strings need to be compacted
+    IArgValidator val = new ArgValidator();
+    String[] validated = val.validate(args);
+    PhoneCall call = new PhoneCall(validated);
     PhoneBill bill = new PhoneBill();
     bill.addPhoneCall(call);
+
+    //no output specified if args are error-free
+    return;
   }
 
 }
