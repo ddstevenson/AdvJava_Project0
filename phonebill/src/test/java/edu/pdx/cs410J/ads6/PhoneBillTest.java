@@ -3,9 +3,9 @@ package edu.pdx.cs410J.ads6;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-
+/**
+ * Unit test suite for the {@link PhoneBill} class.
+ */
 public class PhoneBillTest {
 
     @Test

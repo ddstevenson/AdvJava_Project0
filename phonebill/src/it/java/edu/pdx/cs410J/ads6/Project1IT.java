@@ -53,6 +53,13 @@ public class Project1IT extends InvokeMainTestCase {
     }
 
     @Test
+    public void Project1_Main_1ArgREADME_Success() {
+        MainMethodResult result = invokeMain(data[8]);
+        assertThat(result.getExitCode(), equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("By Andrew Stevenson, for Advanced Programming"));
+    }
+
+    @Test
     public void Project1_Main_7Arg_Error() {
         MainMethodResult result = invokeMain(data[1],data[0],data[2],data[3],data[4],data[5],data[6]);
         assertThat(result.getExitCode(), equalTo(1));
@@ -67,17 +74,17 @@ public class Project1IT extends InvokeMainTestCase {
     }
 
     @Test
-    public void Project1_Main_8Arg_Success() {
+    public void Project1_Main_8ArgPrint_Success() {
         MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[0]);
         assertThat(result.getExitCode(), equalTo(null));
-        //assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardOut(), containsString(data[2]));
     }
 
     @Test
-    public void Project1_Main_9Arg_Success() {
+    public void Project1_Main_9ArgREADME_Success() {
         MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[0], data[8]);
         assertThat(result.getExitCode(), equalTo(0));
-        //assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("By Andrew Stevenson, for Advanced Programming"));
     }
 
     @Test

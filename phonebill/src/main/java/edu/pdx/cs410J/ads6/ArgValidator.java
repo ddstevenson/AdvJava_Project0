@@ -3,8 +3,23 @@ package edu.pdx.cs410J.ads6;
 import static java.lang.System.exit;
 import java.util.regex.*;
 
+/**
+ * Simple class with one method to parse the input from the command line.
+ */
 public class ArgValidator implements IArgValidator{
 
+    /**
+     * @param args The raw input from the command line as passed in to main().
+     * @return String array with the following elements:
+     * 1) Name
+     * 2) Caller phone number
+     * 3) Callee phone number
+     * 4) Begin date and time
+     * 5) End date and time
+     * 6) "true" or "false" indicating whether -print option was specified
+     * @implNote This method has multiple side effects, since it exits and prints to
+     * stderr and stdout depending on the content of the command line args.
+     */
     public String[]  validate(String[] args){
         String[] retval = new String[6];
         boolean bPrint = false;
@@ -93,10 +108,20 @@ public class ArgValidator implements IArgValidator{
         return retval;
     }
 
+    /**
+     * Prints readme contents for user.
+     */
     private void print_readme(){
-        System.out.println("");
+        System.out.println("Project 1\n" +
+                "By Andrew Stevenson, for Advanced Programming in Java at Portland State University.\n" +
+                "A simple command line parser that accepts as input the record of a single phone call. \n" +
+                "If the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed.\n" +
+                "Call this program with the command-line argument -README to view usage instructions.");
     }
 
+    /**
+     * Prints usage blurb to assist user in choosing correct arguments.
+     */
     private void print_usage(){
         System.out.println("usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
                 "\targs are (in this order):\n" +
@@ -111,6 +136,12 @@ public class ArgValidator implements IArgValidator{
                 "\tDate and time should be in the format: mm/dd/yyyy hh:mm\n");
     }
 
+    /**
+     * Returns true if the pattern has a match within target; false otherwise.
+     * @param pattern regex expression to match
+     * @param target string within to search for a match
+     * @return boolean indicating whether match was found
+     */
     private boolean pattern_match(String pattern, String target){
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(target);
@@ -119,6 +150,13 @@ public class ArgValidator implements IArgValidator{
 
 }
 
+/**
+ * Simple contract to keep validator class methods in check.
+ */
 interface IArgValidator{
+    /**
+     * @param args Raw input args from the command line call.
+     * @return Implementation-dependent parsed array of strings.
+     */
     String[] validate(String[] args);
 }

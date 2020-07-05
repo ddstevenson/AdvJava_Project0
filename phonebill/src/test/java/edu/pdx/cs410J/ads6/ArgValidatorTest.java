@@ -1,11 +1,9 @@
 package edu.pdx.cs410J.ads6;
 import org.junit.*;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
-
+/**
+ * Unit test suite for the {@link ArgValidator} class.
+ */
 public class ArgValidatorTest  {
     private String[] data;
 

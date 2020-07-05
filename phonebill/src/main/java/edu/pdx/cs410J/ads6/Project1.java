@@ -11,9 +11,10 @@ public class Project1 {
     PhoneCall call = new PhoneCall(validated);
     PhoneBill bill = new PhoneBill();
     bill.addPhoneCall(call);
-
+    if(validated[5].equals("true")){
+      System.out.println(call.toString());
+    }
     //no output specified if args are error-free
-    return;
   }
 
 }
