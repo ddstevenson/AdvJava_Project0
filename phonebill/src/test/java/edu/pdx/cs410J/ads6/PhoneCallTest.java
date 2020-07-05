@@ -7,8 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for the {@link PhoneCall} class.
- *
- * You'll need to update these unit tests as you build out you program.
  */
 public class PhoneCallTest {
   private String[] data;
@@ -18,6 +16,12 @@ public class PhoneCallTest {
     data = new String[]{"Andrew","322-234-2343","333-333-3333","10/30/20 5:30",
             "3/17/21 23:67"};
   }
+
+  @After
+  public void tearDown() {
+    data = null;
+  }
+
   @Test
   public void PhoneCall_getCaller_nullIsNull_True() {
     PhoneCall call = new PhoneCall();
