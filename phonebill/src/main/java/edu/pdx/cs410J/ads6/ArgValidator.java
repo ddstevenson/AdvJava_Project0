@@ -7,6 +7,8 @@ import java.util.regex.*;
  * Simple class with one method to parse the input from the command line.
  */
 public class ArgValidator implements IArgValidator{
+    // TODO: enforce option, arg command line order
+    // TODO: add -testFile option
 
     /**
      * @param args The raw input from the command line as passed in to main().
