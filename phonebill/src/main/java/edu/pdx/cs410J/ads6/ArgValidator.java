@@ -17,11 +17,12 @@ public class ArgValidator implements IArgValidator{
      * 4) Begin date and time
      * 5) End date and time
      * 6) "true" or "false" indicating whether -print option was specified
+     * 7) name of the file to be read from / written to if -textFile specified; empty otherwise
      * @implNote This method has multiple side effects, since it exits and prints to
      * stderr and stdout depending on the content of the command line args.
      */
     public String[]  validate(String[] args){
-        String[] retval = new String[6];
+        String[] retval = new String[7];
         boolean bPrint = false;
         boolean bWrite = false;
 
@@ -57,12 +58,12 @@ public class ArgValidator implements IArgValidator{
 
         //put the right args in the correct retval buckets
         for(int ret_index = 0, args_index = 0; ret_index < 5; ++args_index){
-            if(args[args_index].equals("-print") ||
-                    args[args_index].equals("-textFile") ||
-                    (args_index != 0 && args[args_index - 1].equals("-textFile"))) {
+            if(args[args_index].equals("-print") || args[args_index].equals("-textFile")) {
                 continue;
             }
-            if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
+            if(args_index != 0 && args[args_index - 1].equals("-textFile")){
+                retval[6] = args[args_index];
+            } else if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
                 if(retval[ret_index] == null){
                     retval[ret_index]=args[args_index];
                 } else {
@@ -115,6 +116,9 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 5: // boolean print value
+                    // Nothing to do here
+                    break;
+                case 6: // Filename, if applicable
                     // Nothing to do here
                     break;
                 default: assert false: "Invalid index for retval in validate()";

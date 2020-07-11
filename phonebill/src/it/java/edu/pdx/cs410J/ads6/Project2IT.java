@@ -38,12 +38,19 @@ public class Project2IT extends InvokeMainTestCase {
   /**
    * Tests that invoking the main method with no arguments issues an error
    */
-  @Test
-  public void Project1_Main_NoArgs_Error() {
-    MainMethodResult result = invokeMain();
-    assertThat(result.getExitCode(), equalTo(1));
-    assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
-  }
+    @Test
+    public void Project1_Main_NoArgs_Error() {
+        MainMethodResult result = invokeMain();
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_NullArgs_Error() {
+        MainMethodResult result = invokeMain(null);
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
+    }
 
     @Test
     public void Project1_Main_1Arg_Error() {
