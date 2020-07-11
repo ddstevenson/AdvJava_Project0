@@ -7,8 +7,6 @@ import java.util.regex.*;
  * Simple class with one method to parse the input from the command line.
  */
 public class ArgValidator implements IArgValidator{
-    // TODO: enforce option, arg command line order
-    // TODO: add -testFile option
 
     /**
      * @param args The raw input from the command line as passed in to main().
@@ -25,27 +23,43 @@ public class ArgValidator implements IArgValidator{
     public String[]  validate(String[] args){
         String[] retval = new String[6];
         boolean bPrint = false;
+        boolean bWrite = false;
 
-        for(String s: args){
-            // Must be done first b/c the readme flag could be embedded amongst invalid args
-            if(s.equals("-README")){
+        if (args == null){
+            System.err.println("Missing or incorrect command line arguments.");
+            print_usage();
+            exit(1);
+        }
+
+        for(int x = 0; x < 4; ++x){ //max total 4 option strings in args[]
+            if(args.length == 0){
+                break; // catch this outcome below
+            } else if(args[x].equals("-README")){
                 print_readme();
                 exit(0);
-            } else if (s.equals("-print")){
+            } else if (args[x].equals("-print")){
                 bPrint = true;
+            } else if (args[x].equals("-textFile")){
+                bWrite = true;
+            } else if ( !(x > 0 && args[x - 1].equals("-textFile"))){
+                break;  // once we hit something that's not an option, we're done
             }
         }
 
         //ensure correct # of args
-        if( (args.length != 7 && !bPrint) || (args.length != 8 && bPrint) ) {
-            System.err.println("Missing or incorrect command line arguments:");
+        int num_opt_args = (bPrint) ? (1) : (0);
+        num_opt_args += (bWrite) ? (2) : (0);
+        if(args.length != (7 + num_opt_args)) {
+            System.err.println("Missing or incorrect command line arguments.");
             print_usage();
             exit(1);
         }
 
         //put the right args in the correct retval buckets
         for(int ret_index = 0, args_index = 0; ret_index < 5; ++args_index){
-            if(args[args_index].equals("-print")) {
+            if(args[args_index].equals("-print") ||
+                    args[args_index].equals("-textFile") ||
+                    (args_index != 0 && args[args_index - 1].equals("-textFile"))) {
                 continue;
             }
             if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
@@ -114,11 +128,12 @@ public class ArgValidator implements IArgValidator{
      * Prints readme contents for user.
      */
     private void print_readme(){
-        System.out.println("Project 1\n" +
+        System.out.println("Project 2\n" +
                 "By Andrew Stevenson, for Advanced Programming in Java at Portland State University.\n" +
                 "A simple command line parser that accepts as input the record of a single phone call. \n" +
                 "If the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed.\n" +
-                "Call this program with the command-line argument -README to view usage instructions.");
+                "Optionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill." +
+                "Call this program without command-line arguments to view usage instructions.");
     }
 
     /**
@@ -133,6 +148,7 @@ public class ArgValidator implements IArgValidator{
                 "\t\tstart Date and time call began (24-hour time)\n" +
                 "\t\tend Date and time call ended (24-hour time)\n" +
                 "\toptions are (options may appear in any order):\n" +
+                "\t\t-textFile file Where to read/write the phone bill\n" +
                 "\t\t-print Prints a description of the new phone call\n" +
                 "\t\t-README Prints a README for this project and exits\n" +
                 "\tDate and time should be in the format: mm/dd/yyyy hh:mm\n");
