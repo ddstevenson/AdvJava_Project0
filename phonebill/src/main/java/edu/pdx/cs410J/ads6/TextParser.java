@@ -5,8 +5,18 @@ import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.PhoneBillParser;
 
 public class TextParser implements PhoneBillParser {
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    private String filename;
+
     @Override
     public AbstractPhoneBill parse() throws ParserException {
-        return null;
+        return new PhoneBill();
     }
 }

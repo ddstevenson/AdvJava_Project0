@@ -1,4 +1,7 @@
 package edu.pdx.cs410J.ads6;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.After;
@@ -8,6 +11,7 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertThrows;
 
 /**
  * Tests the functionality in the {@link Project2} main class.
@@ -25,13 +29,15 @@ public class Project2IT extends InvokeMainTestCase {
     @Before
     public void setUp() {
         // represents valid data - replace to test error messages
-        data = new String[]{"-print", "Andrew Stevenson","322-234-2343","333-333-3333",
-                "10/30/2020", "05:30", "03/17/2021", "23:67",
-                "-README", "-textFile", "filename placeholder"};
+        data = new String[]{"-print", "Andrew Stevenson","322-234-2343","333-333-3333", //0,1,2,3
+                "10/30/2020", "05:30", "03/17/2021", "23:67",                           //4,5,6,7
+                "-README", "-textFile", "test.txt"};                                    //8,9,10
     }
 
     @After
     public void tearDown() {
+        File file = new File(data[10]);
+        file.delete();      // Intentionally ignore result; we don't care if the file existed or not
         data = null;
     }
 
@@ -75,8 +81,22 @@ public class Project2IT extends InvokeMainTestCase {
 
     @Test
     public void Project1_Main_7Arg_Success() {
-        MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
         assertThat(result.getExitCode(), equalTo(null));
+    }
+
+    @Test
+    public void Project1_Main_9ArgFileNameCustomerIsCustomer_Success() throws IOException {
+        MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        assertThat(result.getExitCode(), equalTo(null));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString(data[2]));
+    }
+
+    @Test
+    public void Project1_Main_9ArgFileNameCallerIsCaller_Success() throws IOException {
+        MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        assertThat(result.getExitCode(), equalTo(null));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString(data[1]));
     }
 
     @Test

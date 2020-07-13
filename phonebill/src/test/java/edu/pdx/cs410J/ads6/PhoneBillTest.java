@@ -15,8 +15,8 @@ public class PhoneBillTest {
     }
 
     @Test
-    public void PhoneBill_getPhoneCalls_IsNull_True(){
+    public void PhoneBill_getPhoneCalls_IsEmpty_True(){
         PhoneBill bill = new PhoneBill();
-        assertSame(bill.getPhoneCalls(),null);
+        assertTrue(bill.getPhoneCalls().isEmpty());
     }
 }

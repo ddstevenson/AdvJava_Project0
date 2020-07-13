@@ -125,6 +125,12 @@ public class ArgValidator implements IArgValidator{
             }
         }
 
+        for(String s : retval){
+            if(s == null){
+                s = new String("");
+            }
+        }
+
         return retval;
     }
 
