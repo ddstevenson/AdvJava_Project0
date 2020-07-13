@@ -11,13 +11,13 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertThrows;
 
 /**
  * Tests the functionality in the {@link Project2} main class.
  */
 public class Project2IT extends InvokeMainTestCase {
     private String[] data;
+    private String fileContents, badFileContents;
 
     /**
      * Invokes the main method of {@link Project2} with the given arguments.
@@ -32,6 +32,14 @@ public class Project2IT extends InvokeMainTestCase {
         data = new String[]{"-print", "Andrew Stevenson","322-234-2343","333-333-3333", //0,1,2,3
                 "10/30/2020", "05:30", "03/17/2021", "23:67",                           //4,5,6,7
                 "-README", "-textFile", "test.txt"};                                    //8,9,10
+
+        fileContents = "Andrew Stevenson's phone bill with 2 phone calls\n" +
+                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1984 05:30 to 03/17/1984 23:67\n" +
+                "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1984 05:30 to 03/17/1984 23:67\n";
+
+        badFileContents = "Andrew Blarg's phone bill with 2 phone calls\n" +
+                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1984 05:30 to 03/17/1984 23:67\n" +
+                "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1984 05:30 to 03/17/1984 23:67\n";
     }
 
     @After
@@ -39,6 +47,8 @@ public class Project2IT extends InvokeMainTestCase {
         File file = new File(data[10]);
         file.delete();      // Intentionally ignore result; we don't care if the file existed or not
         data = null;
+        fileContents = null;
+        badFileContents = null;
     }
 
   /**
@@ -90,6 +100,36 @@ public class Project2IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
         assertThat(result.getExitCode(), equalTo(null));
         assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString(data[2]));
+    }
+
+    @Test
+    public void Project1_Main_9ArgFileNameReadAndRewritten_Success() throws IOException {
+        FileOutputStream out  = new FileOutputStream(data[10]);
+        out.write(fileContents.getBytes());
+        out.close();
+        MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        assertThat(result.getExitCode(), equalTo(null));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 322-234-2343 to 333-333-3333 from 10/30/2020 05:30 to 03/17/2021 23:67"));
+    }
+
+    @Test
+    public void Project1_Main_9ArgFileNameCustomerMismatch_Failure() throws IOException {
+        FileOutputStream out  = new FileOutputStream(data[10]);
+        out.write(badFileContents.getBytes());
+        out.close();
+        MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Error: the indicated customer is not the customer in file"));
+    }
+
+    @Test
+    public void Project1_Main_9ArgFileNameRead_Failure() throws IOException {
+        FileOutputStream out  = new FileOutputStream(data[10]);
+        out.write("monkey see monkey do".getBytes());
+        out.close();
+        MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Error: malformatted file "));
     }
 
     @Test

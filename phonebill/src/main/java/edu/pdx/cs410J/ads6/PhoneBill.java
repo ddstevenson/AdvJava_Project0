@@ -17,6 +17,9 @@ public class PhoneBill extends AbstractPhoneBill{
         calls = new HashSet<AbstractPhoneCall>();
     }
 
+    /**
+     * @param c new customer id/name
+     */
     public PhoneBill(String c){
         calls = new HashSet<AbstractPhoneCall>();
         customer = c;
