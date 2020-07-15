@@ -4,7 +4,6 @@ import edu.pdx.cs410J.ParserException;
 import org.junit.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 /**
  * Unit test suite for the {@link TextParser} class.
@@ -31,12 +30,4 @@ public class TextParserTest {
         assertSame(t.getFilename(), "bob");
     }
 
-    @Test(expected = NullPointerException.class)
-    public void TextDumper_dump_NullFilenameThrowsException_True() throws ParserException {
-        TextParser t = new TextParser(); // intentionally not setting filename
-        AbstractPhoneCall pc = mock(AbstractPhoneCall.class);
-        PhoneBill pb = new PhoneBill();
-        pb.addPhoneCall(pc);
-        t.parse();
-    }
 }
