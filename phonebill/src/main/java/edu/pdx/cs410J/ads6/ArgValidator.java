@@ -84,7 +84,7 @@ public class ArgValidator implements IArgValidator{
                     // nothing to do here
                     break;
                 case 1: // caller
-                    if(!pattern_match("^[2-9]\\d{2}-\\d{3}-\\d{4}$",retval[ret_index])){
+                    if(!pattern_match("^\\d{3}-\\d{3}-\\d{4}$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted caller phone number.");
                         System.err.println("Was: " + retval[ret_index]);
                         System.err.println("Expected: ddd-ddd-dddd");
@@ -92,7 +92,7 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 2: // callee
-                    if(!pattern_match("^[2-9]\\d{2}-\\d{3}-\\d{4}$",retval[ret_index])){
+                    if(!pattern_match("^\\d{3}-\\d{3}-\\d{4}$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted callee phone number.");
                         System.err.println("Was: " + retval[ret_index]);
                         System.err.println("Expected: ddd-ddd-dddd");
@@ -125,12 +125,6 @@ public class ArgValidator implements IArgValidator{
             }
         }
 
-        for(String s : retval){
-            if(s == null){
-                s = new String("");
-            }
-        }
-
         return retval;
     }
 
@@ -142,7 +136,7 @@ public class ArgValidator implements IArgValidator{
                 "By Andrew Stevenson, for Advanced Programming in Java at Portland State University.\n" +
                 "A simple command line parser that accepts as input the record of a single phone call. \n" +
                 "If the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed.\n" +
-                "Optionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill." +
+                "Optionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill.\n" +
                 "Call this program without command-line arguments to view usage instructions.");
     }
 
