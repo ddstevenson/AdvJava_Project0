@@ -13,7 +13,7 @@ public class PhoneCallTest {
 
   @Before
   public void setUp() {
-    data = new String[]{"Andrew","322-234-2343","333-333-3333","10/30/20 5:30",
+    data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30",
             "3/17/21 23:67"};
   }
 

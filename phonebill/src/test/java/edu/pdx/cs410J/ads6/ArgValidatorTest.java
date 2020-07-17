@@ -13,7 +13,7 @@ public class ArgValidatorTest  {
     @Before
     public void setUp() {
         // represents valid data - replace to test error messages
-        data = new String[]{"-print", "-textFile", "filename", "Andrew","322-234-2343","333-333-3333",
+        data = new String[]{"-print", "-textFile", "filename", "Andrew","122-234-2343","133-333-3333",
                 "10/30/2020", "05:30", "03/17/2021", "23:67"};
     }
 

@@ -29,7 +29,7 @@ public class Project2IT extends InvokeMainTestCase {
     @Before
     public void setUp() {
         // represents valid data - replace to test error messages
-        data = new String[]{"-print", "Andrew Stevenson","322-234-2343","333-333-3333", //0,1,2,3
+        data = new String[]{"-print", "Andrew Stevenson","122-234-2343","133-333-3333", //0,1,2,3
                 "10/30/2020", "05:30", "03/17/2021", "23:67",                           //4,5,6,7
                 "-README", "-textFile", "test.txt"};                                    //8,9,10
 
@@ -109,7 +109,7 @@ public class Project2IT extends InvokeMainTestCase {
         out.close();
         MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
         assertThat(result.getExitCode(), equalTo(null));
-        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 322-234-2343 to 333-333-3333 from 10/30/2020 05:30 to 03/17/2021 23:67"));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 122-234-2343 to 133-333-3333 from 10/30/2020 05:30 to 03/17/2021 23:67"));
     }
 
     @Test
