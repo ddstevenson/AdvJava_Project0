@@ -1,9 +1,7 @@
 package edu.pdx.cs410J.ads6;
 import org.junit.*;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
+
 /**
  * Unit test suite for the {@link ArgValidator} class.
  */
@@ -14,7 +12,7 @@ public class ArgValidatorTest  {
     public void setUp() {
         // represents valid data - replace to test error messages
         data = new String[]{"-print", "-textFile", "filename", "Andrew","122-234-2343","133-333-3333",
-                "10/30/2020", "05:30", "03/17/2021", "23:67"};
+                "10/30/2020", "05:30", "pm", "03/17/2021", "03:07", "pm"};
     }
 
     @After
@@ -47,14 +45,14 @@ public class ArgValidatorTest  {
     public void ArgValidator_validate_beginIsBegin_true() {
         ArgValidator val = new ArgValidator();
         String [] validated = val.validate(data);
-        assertEquals(validated[3],data[6] + " " + data[7]);
+        assertEquals(validated[3],data[6] + " " + data[7] + " " + data[8]);
     }
 
     @Test
     public void ArgValidator_validate_endIsEnd_true() {
         ArgValidator val = new ArgValidator();
         String [] validated = val.validate(data);
-        assertEquals(validated[4],data[8] + " " + data[9]);
+        assertEquals(validated[4],data[9] + " " + data[10]+ " " + data[11]);
     }
 
     @Test
@@ -63,6 +61,7 @@ public class ArgValidatorTest  {
         String [] validated = val.validate(data);
         assertEquals(validated[5],"true");
     }
+
 
 }
 

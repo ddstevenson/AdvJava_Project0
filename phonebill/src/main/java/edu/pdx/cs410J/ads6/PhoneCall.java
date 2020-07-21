@@ -1,5 +1,9 @@
 package edu.pdx.cs410J.ads6;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import edu.pdx.cs410J.AbstractPhoneCall;
 /**
  * PhoneCall class: stores and retrieves information about an individual phone call record.
@@ -12,8 +16,8 @@ public class PhoneCall extends AbstractPhoneCall {
   final private String customer;
   final private String callerNumber;
   final private String calleeNumber;
-  final private String start; // will become a date in later versions...
-  final private String end;
+  private Date start;
+  private Date end;
 
   /**
    * Default constructor
@@ -38,12 +42,18 @@ public class PhoneCall extends AbstractPhoneCall {
    * 5) End date and time
    * 6) "true" or "false" indicating whether -print option was specified NOT USED
    */
-  public PhoneCall(String[] s){
+  public PhoneCall(String[] s) {
     customer = s[0];
     callerNumber = s[1];
     calleeNumber = s[2];
-    start = s[3];
-    end = s[4];
+    DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+    //DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+    try {
+      start = format.parse(s[3]);
+      end = format.parse(s[4]);
+    } catch (ParseException p){
+      assert false : "Error: Date strings passed to PhoneCall should be pre-validated.\nStart Time: " + s[3] + "\nEnd Time: " + s[4];
+    }
   }
 
   /**
@@ -68,7 +78,11 @@ public class PhoneCall extends AbstractPhoneCall {
    */
   @Override
   public String getStartTimeString() {
-    return start;
+    if(start==null){
+      return null;
+    }
+    DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+    return format.format(start);
   }
 
   /**
@@ -77,6 +91,10 @@ public class PhoneCall extends AbstractPhoneCall {
    */
   @Override
   public String getEndTimeString() {
-    return end;
+    if(end==null){
+      return null;
+    }
+    DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
+    return format.format(end);
   }
 }

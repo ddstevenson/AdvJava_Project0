@@ -13,8 +13,8 @@ public class PhoneCallTest {
 
   @Before
   public void setUp() {
-    data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30",
-            "3/17/21 23:67"};
+    data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30 am",
+            "3/17/21 03:67 am"};
   }
 
   @After
@@ -55,7 +55,7 @@ public class PhoneCallTest {
   @Test
   public void PhoneCall_getStartTimeString_StringIsString_True() {
     PhoneCall call = new PhoneCall(data);
-    assertSame(call.getStartTimeString(), data[3]);
+    assertThat(call.getStartTimeString(), containsString("10/30/20, 5:30 AM"));
   }
 
   @Test
@@ -67,6 +67,6 @@ public class PhoneCallTest {
   @Test
   public void PhoneCall_getEndTime_StringIsString_True() {
     PhoneCall call = new PhoneCall(data);
-    assertSame(call.getEndTimeString(), data[4]);
+    assertThat(call.getEndTimeString(), containsString("3/17/21, 4:07 AM"));
   }
 }

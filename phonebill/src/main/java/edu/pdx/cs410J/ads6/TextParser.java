@@ -40,7 +40,7 @@ public class TextParser implements PhoneBillParser {
         java.util.List<String> lines;
         PhoneBill retval = null;
         final String line1Match = "(.+)'s phone bill with .+ phone calls";
-        final String line2Match = "Phone call from ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) to ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) from (\\d{2}\\/\\d{2}\\/\\d{4} \\d{2}:\\d{2}) to (\\d{2}\\/\\d{2}\\/\\d{4} \\d{2}:\\d{2})";
+        final String line2Match = "Phone call from ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) to ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) from (\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2} [AaPp][Mm]) to (\\d{2}\\/\\d{2}\\/\\d{4}, \\d{2}:\\d{2} [AaPp][Mm])";
         try {
             lines = Files.readAllLines(Paths.get(filename));
         } catch (IOException e) {
@@ -48,6 +48,9 @@ public class TextParser implements PhoneBillParser {
             return null;
         }
         for(String line : lines){
+            if(line.isEmpty()){
+                continue;
+            }
             if(retval == null){     // line 1
                 Pattern p = Pattern.compile(line1Match);
                 Matcher m = p.matcher(line);
@@ -61,7 +64,8 @@ public class TextParser implements PhoneBillParser {
                 if(!m.matches()){
                     throw new ParserException(filename);
                 }
-                String[] param = new String[]{retval.getCustomer(), m.group(1), m.group(2), m.group(3), m.group(4)};
+                String[] param = new String[]{retval.getCustomer(), m.group(1), m.group(2),
+                        m.group(3).replace(",",""), m.group(4).replace(",","")};
                 PhoneCall call = new PhoneCall(param);
                 retval.addPhoneCall(call);
             }

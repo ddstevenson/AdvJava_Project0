@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.ads6;
 
+import static java.lang.Integer.min;
 import static java.lang.System.exit;
 import java.util.regex.*;
 
@@ -18,13 +19,15 @@ public class ArgValidator implements IArgValidator{
      * 5) End date and time
      * 6) "true" or "false" indicating whether -print option was specified
      * 7) name of the file to be read from / written to if -textFile specified; empty otherwise
+     * 8) name of the file to be pretty printed to if -pretty option specified; empty otherwise
      * @implNote This method has multiple side effects, since it exits and prints to
      * stderr and stdout depending on the content of the command line args.
      */
     public String[]  validate(String[] args){
-        String[] retval = new String[7];
+        String[] retval = new String[8];
         boolean bPrint = false;
         boolean bWrite = false;
+        boolean bPretty = false;
 
         if (args == null){
             System.err.println("Missing or incorrect command line arguments.");
@@ -32,8 +35,8 @@ public class ArgValidator implements IArgValidator{
             exit(1);
         }
 
-        for(int x = 0; x < 4; ++x){ //max total 4 option strings in args[]
-            if(args.length == 0){
+        for(int x = 0; x < min(args.length,6); ++x){ //max total 6 option strings in args[]
+            if(args[x] == null){
                 break; // catch this outcome below
             } else if(args[x].equals("-README")){
                 print_readme();
@@ -42,7 +45,9 @@ public class ArgValidator implements IArgValidator{
                 bPrint = true;
             } else if (args[x].equals("-textFile")){
                 bWrite = true;
-            } else if ( !(x > 0 && args[x - 1].equals("-textFile"))){
+            } else if (args[x].equals("-pretty")){
+                bPretty = true;
+            } else if ( !(x > 0 && (args[x - 1].equals("-textFile") || args[x - 1].equals("-pretty")))){
                 break;  // once we hit something that's not an option, we're done
             }
         }
@@ -50,7 +55,8 @@ public class ArgValidator implements IArgValidator{
         //ensure correct # of args
         int num_opt_args = (bPrint) ? (1) : (0);
         num_opt_args += (bWrite) ? (2) : (0);
-        if(args.length != (7 + num_opt_args)) {
+        num_opt_args += (bPretty) ? (2) : (0);
+        if(args.length != (9 + num_opt_args)) { // magic number: 1 + 1 + 1 + 3 +3 = 9
             System.err.println("Missing or incorrect command line arguments.");
             print_usage();
             exit(1);
@@ -58,15 +64,21 @@ public class ArgValidator implements IArgValidator{
 
         //put the right args in the correct retval buckets
         for(int ret_index = 0, args_index = 0; ret_index < 5; ++args_index){
-            if(args[args_index].equals("-print") || args[args_index].equals("-textFile")) {
+            if(args[args_index].equals("-print") ||
+                    args[args_index].equals("-textFile") ||
+                    args[args_index].equals("-pretty")) {
                 continue;
             }
             if(args_index != 0 && args[args_index - 1].equals("-textFile")){
                 retval[6] = args[args_index];
+            }  else if(args_index != 0 && args[args_index - 1].equals("-pretty")) {
+                retval[7] = args[args_index];
             } else if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
-                if(retval[ret_index] == null){
+                if(retval[ret_index] == null){  // field is empty; set to date field
                     retval[ret_index]=args[args_index];
-                } else {
+                } else if(args[args_index].length() > 2){ // process time field
+                    retval[ret_index] += (" " + args[args_index]);
+                } else { // process am/pm
                     retval[ret_index] += (" " + args[args_index]);
                     ++ret_index;
                 }
@@ -100,18 +112,18 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 3: // begin date/time string
-                    if(!pattern_match("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{2}):(\\d{2})$",retval[ret_index])){
+                    if(!pattern_match("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{2}):(\\d{2}) ([AaPp][Mm])$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted begin date/time.");
                         System.err.println("Was: " + retval[ret_index]);
-                        System.err.println("Expected: mm/dd/yyyy hh:mm");
+                        System.err.println("Expected: mm/dd/yyyy hh:mm am");
                         exit(1);
                     }
                     break;
                 case 4: // end date/time string
-                    if(!pattern_match("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{2}):(\\d{2})$",retval[ret_index])){
+                    if(!pattern_match("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{2}):(\\d{2}) ([AaPp][Mm])$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted end date/time.");
                         System.err.println("Was: " + retval[ret_index]);
-                        System.err.println("Expected: mm/dd/yyyy hh:mm");
+                        System.err.println("Expected: mm/dd/yyyy hh:mm am");
                         exit(1);
                     }
                     break;
@@ -119,7 +131,10 @@ public class ArgValidator implements IArgValidator{
                     // Nothing to do here
                     break;
                 case 6: // Filename, if applicable
-                    // Nothing to do here
+                    // Do nothing
+                    break;
+                case 7: // Pretty filename, if applicable
+                    // Do nothing
                     break;
                 default: assert false: "Invalid index for retval in validate()";
             }
@@ -132,7 +147,7 @@ public class ArgValidator implements IArgValidator{
      * Prints readme contents for user.
      */
     private void print_readme(){
-        System.out.println("Project 2\n" +
+        System.out.println("Project 3\n" +
                 "By Andrew Stevenson, for Advanced Programming in Java at Portland State University.\n" +
                 "A simple command line parser that accepts as input the record of a single phone call. \n" +
                 "If the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed.\n" +
@@ -144,7 +159,7 @@ public class ArgValidator implements IArgValidator{
      * Prints usage blurb to assist user in choosing correct arguments.
      */
     private void print_usage(){
-        System.out.println("usage: java edu.pdx.cs410J.<login-id>.Project1 [options] <args>\n" +
+        System.out.println("usage: java edu.pdx.cs410J.ads6.Project3 [options] <args>\n" +
                 "\targs are (in this order):\n" +
                 "\t\tcustomer Person whose phone bill we’re modeling\n" +
                 "\t\tcallerNumber Phone number of caller\n" +
@@ -152,6 +167,7 @@ public class ArgValidator implements IArgValidator{
                 "\t\tstart Date and time call began (24-hour time)\n" +
                 "\t\tend Date and time call ended (24-hour time)\n" +
                 "\toptions are (options may appear in any order):\n" +
+                "\t\t-pretty file  Pretty print the phone bill to a text file or standard out (file -).\n" +
                 "\t\t-textFile file Where to read/write the phone bill\n" +
                 "\t\t-print Prints a description of the new phone call\n" +
                 "\t\t-README Prints a README for this project and exits\n" +
