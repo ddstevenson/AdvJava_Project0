@@ -3,25 +3,24 @@ package edu.pdx.cs410J.ads6;
 import edu.pdx.cs410J.AbstractPhoneBill;
 import edu.pdx.cs410J.AbstractPhoneCall;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Class representing an entire phone bill. To be expanded in future iterations.
  */
 public class PhoneBill extends AbstractPhoneBill{
-    private Collection<AbstractPhoneCall> calls;
+    private List<PhoneCall> calls;
     private String customer;
 
     public PhoneBill(){
-        calls = new HashSet<AbstractPhoneCall>();
+        calls = new LinkedList<>();
     }
 
     /**
      * @param c new customer id/name
      */
     public PhoneBill(String c){
-        calls = new HashSet<AbstractPhoneCall>();
+        calls = new LinkedList<>();
         customer = c;
     }
 
@@ -39,7 +38,7 @@ public class PhoneBill extends AbstractPhoneBill{
      */
     @Override
     public void addPhoneCall(AbstractPhoneCall abstractPhoneCall) {
-        calls.add(abstractPhoneCall);
+        calls.add((PhoneCall) abstractPhoneCall);
     }
 
     /**
@@ -47,7 +46,8 @@ public class PhoneBill extends AbstractPhoneBill{
      */
     @Override
     public Collection<String> getPhoneCalls() {
-        Collection<String> retval = new HashSet<>();
+        Collections.sort(calls);
+        Collection<String> retval = new LinkedList<>();
         for(AbstractPhoneCall c : calls){
             retval.add(c.toString());
         }

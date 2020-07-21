@@ -8,11 +8,8 @@ import edu.pdx.cs410J.AbstractPhoneCall;
 /**
  * PhoneCall class: stores and retrieves information about an individual phone call record.
  */
-public class PhoneCall extends AbstractPhoneCall {
-  /**
-   * these fields could have been a string array, but I think we'll have to break
-   * out some of these fields to other types during future iterations
-   */
+public class PhoneCall extends AbstractPhoneCall implements java.lang.Comparable<PhoneCall>{
+
   final private String customer;
   final private String callerNumber;
   final private String calleeNumber;
@@ -47,7 +44,6 @@ public class PhoneCall extends AbstractPhoneCall {
     callerNumber = s[1];
     calleeNumber = s[2];
     DateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-    //DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
     try {
       start = format.parse(s[3]);
       end = format.parse(s[4]);
@@ -96,5 +92,21 @@ public class PhoneCall extends AbstractPhoneCall {
     }
     DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
     return format.format(end);
+  }
+
+  @Override
+  public java.util.Date getStartTime(){
+    return start;
+  }
+
+  @Override
+  public java.util.Date getEndTime(){
+    return end;
+  }
+
+  @Override
+  public int compareTo(PhoneCall o) {
+    int st = this.start.compareTo(o.start);
+    return (st != 0) ? st : this.end.compareTo(o.end);
   }
 }
