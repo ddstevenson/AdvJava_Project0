@@ -27,6 +27,6 @@ public class PrettyPrinterTest {
 
     @Test
     public void fake_news() {
-        return;
+        return; // really no meaningful tests, since the prettyprinter is just a side effect
     }
 }

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class PrettyPrinter extends TextDumper {
     final private String line1Match = "(.+)'s phone bill with .+ phone calls";
-    final private String line2Match = "Phone call from ([1-9]\\d{2}\\-\\d{3}\\-\\d{4}) to ([1-9]\\d{2}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{2}, \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{2}, \\d{1,2}:\\d{2} [AaPp][Mm])";
+    final private String line2Match = "Phone call from (\\d{3}\\-\\d{3}\\-\\d{4}) to (\\d{3}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
     final private String[] cols = new String[]{"%10s","%20s","%20s","%25s","%25s","%10s"};
     final private String[] headers = new String[]{"No.", "Date", "Time", "Caller", "Callee", "Minutes"};
 

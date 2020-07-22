@@ -34,12 +34,12 @@ public class Project3IT extends InvokeMainTestCase {
                 "am", "pm"};                                                            //13,14
         
         fileContents = "Andrew Stevenson's phone bill with 2 phone calls\n" +
-                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1983, 05:30 pm to 03/17/1984, 3:07 am\n"
-                + "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1983, 05:30 pm to 03/17/1984, 03:07 am\n";
+                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1983 05:30 pm to 03/17/1984 3:07 am\n"
+                + "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1983 05:30 pm to 03/17/1984 03:07 am\n";
 
         badFileContents = "Andrew Blarg's phone bill with 2 phone calls\n" +
-                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1983, 05:30 pm to 03/17/1984, 03:07 am\n" +
-                "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1983, 05:30 pm to 03/17/1984, 03:07 am\n";
+                "Phone call from 666-666-6666 to 777-777-7777 from 10/30/1983 05:30 pm to 03/17/1984 03:07 am\n" +
+                "Phone call from 555-555-5555 to 444-444-4444 from 10/30/1983 05:30 pm to 03/17/1984 03:07 am\n";
     }
 
     @After
@@ -96,7 +96,7 @@ public class Project3IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain(data[11], data[12], data[1],data[2],data[3],data[4],data[5], data[13], data[6], data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
         assertThat(result.getTextWrittenToStandardOut(), is(""));
-        assertThat(new String(Files.readAllBytes(Paths.get(data[12]))),containsString("0      October 30, 20      5:30:00 AM PST             122-234-2343             133-333-3333    199347"));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[12]))),containsString("0    October 30, 2020      5:30:00 AM PDT             122-234-2343             133-333-3333    199347"));
     }
 
     @Test
@@ -117,6 +117,13 @@ public class Project3IT extends InvokeMainTestCase {
     public void Project1_Main_9ArgNoOptions_Success() {
         MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
+    }
+
+    @Test
+    public void Project1_Main_9ArgNoOptionsBackwardDates_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[6],data[7], data[14],data[4],data[5], data[13]);
+        assertThat(result.getExitCode(), equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Error: the start time is before the end time"));
     }
 
     @Test
@@ -162,7 +169,17 @@ public class Project3IT extends InvokeMainTestCase {
         out.close();
         MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
-        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 122-234-2343 to 133-333-3333 from 10/30/20, 5:30 AM to 3/17/21, 3:57 PM"));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 122-234-2343 to 133-333-3333 from 10/30/2020 5:30 AM to 03/17/2021 3:57 PM"));
+    }
+
+    @Test
+    public void Project1_Main_11ArgFileNameReadThenPretty_Success() throws IOException {
+        FileOutputStream out  = new FileOutputStream(data[10]);
+        out.write(fileContents.getBytes());
+        out.close();
+        MainMethodResult result = invokeMain(data[11], data[12], data[9], data[10],data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), equalTo(null));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[12]))),containsString("2    October 30, 2020      5:30:00 AM PDT             122-234-2343             133-333-3333    199347"));
     }
 
     @Test
@@ -173,13 +190,10 @@ public class Project3IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
 
-        out  = new FileOutputStream(data[10]);
-        out.write(fileContents.getBytes());
-        out.close();
         result = invokeMain(data[9], data[10],data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
 
-        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 122-234-2343 to 133-333-3333 from 10/30/20, 5:30 AM to 3/17/21, 3:57 PM"));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[10]))),containsString("Phone call from 122-234-2343 to 133-333-3333 from 10/30/2020 5:30 AM to 03/17/2021 3:57 PM"));
     }
 
     @Test

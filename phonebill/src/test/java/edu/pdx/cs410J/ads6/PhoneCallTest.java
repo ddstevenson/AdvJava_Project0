@@ -16,8 +16,8 @@ public class PhoneCallTest {
 
   @Before
   public void setUp() {
-    data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30 am",
-            "3/17/21 03:07 am"};
+    data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/2020 5:30 am",
+            "3/17/2021 03:07 am"};
   }
 
   @After
@@ -40,28 +40,28 @@ public class PhoneCallTest {
   @Test
   public void PhoneCall_compareTo_BeginTimeALessThanB_True() {
     PhoneCall call = new PhoneCall(data);
-    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],"10/30/20 5:36 am",data[4]});
+    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],"10/30/2020 5:36 am",data[4]});
     assertTrue(call.compareTo(call2) < 0);
   }
 
   @Test
   public void PhoneCall_compareTo_BeginTimeAGreaterThanB_True() {
     PhoneCall call = new PhoneCall(data);
-    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],"10/30/20 5:36 am",data[4]});
+    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],"10/30/2020 5:36 am",data[4]});
     assertTrue(call2.compareTo(call) > 0);
   }
 
   @Test
   public void PhoneCall_compareTo_EndTimeALessThanB_True() {
     PhoneCall call = new PhoneCall(data);
-    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],data[3],"3/17/21 03:27 am"});
+    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],data[3],"03/17/2021 03:27 am"});
     assertTrue(call.compareTo(call2) < 0);
   }
 
   @Test
   public void PhoneCall_compareTo_EndTimeAGreaterThanB_True() {
     PhoneCall call = new PhoneCall(data);
-    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],data[3],"3/17/21 03:27 am"});
+    PhoneCall call2 = new PhoneCall(new String[]{data[0],data[1],data[2],data[3],"03/17/2021 03:27 am"});
     assertTrue(call2.compareTo(call) > 0);
   }
 
@@ -93,7 +93,7 @@ public class PhoneCallTest {
   @Test
   public void PhoneCall_getStartTimeString_StringIsString_True() {
     PhoneCall call = new PhoneCall(data);
-    assertThat(call.getStartTimeString(), containsString("10/30/20, 5:30 AM"));
+    assertThat(call.getStartTimeString(), containsString("10/30/2020 5:30 AM"));
   }
 
   @Test
@@ -105,6 +105,6 @@ public class PhoneCallTest {
   @Test
   public void PhoneCall_getEndTime_StringIsString_True() {
     PhoneCall call = new PhoneCall(data);
-    assertThat(call.getEndTimeString(), containsString("3/17/21, 3:07 AM"));
+    assertThat(call.getEndTimeString(), containsString("03/17/2021 3:07 AM"));
   }
 }

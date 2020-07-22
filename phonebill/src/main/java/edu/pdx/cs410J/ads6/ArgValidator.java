@@ -114,7 +114,7 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 3: // begin date/time string
-                    p = Pattern.compile("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
+                    p = Pattern.compile("^(\\d{1,2})/(\\d{1,2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
                     m = p.matcher(retval[ret_index]);
                     if(!m.matches() || Integer.valueOf(m.group(4)) > 11 || Integer.valueOf(m.group(5)) > 60){
                         System.err.println("Error: Incorrectly formatted begin date/time.");
@@ -124,7 +124,7 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 4: // end date/time string
-                    p = Pattern.compile("^(\\d{2})/(\\d{2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
+                    p = Pattern.compile("^(\\d{1,2})/(\\d{1,2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
                     m = p.matcher(retval[ret_index]);
                     if(!m.matches() || Integer.valueOf(m.group(4)) > 11 || Integer.valueOf(m.group(5)) > 60){
                         System.err.println("Error: Incorrectly formatted end date/time.");

@@ -77,8 +77,9 @@ public class PhoneCall extends AbstractPhoneCall implements java.lang.Comparable
     if(start==null){
       return null;
     }
-    DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-    return format.format(start);
+    DateFormat tformat = DateFormat.getTimeInstance(DateFormat.SHORT);
+    DateFormat dformat = new SimpleDateFormat("MM/dd/yyyy");
+    return dformat.format(start)+ " " + tformat.format(start);
   }
 
   /**
@@ -90,8 +91,9 @@ public class PhoneCall extends AbstractPhoneCall implements java.lang.Comparable
     if(end==null){
       return null;
     }
-    DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT);
-    return format.format(end);
+    DateFormat tformat = DateFormat.getTimeInstance(DateFormat.SHORT);
+    DateFormat dformat = new SimpleDateFormat("MM/dd/yyyy");
+    return dformat.format(end)+ " " + tformat.format(end);
   }
 
   @Override

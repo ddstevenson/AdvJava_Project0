@@ -30,7 +30,7 @@ public class Project3 {
       TextParser parser = new TextParser();
       parser.setFilename(validated[6]);
       try {
-          bill = parser.parse(); // not yet implemented
+          bill = parser.parse();
       } catch(ParserException e){
         System.err.println("Error: malformatted file " + e.getMessage());
         exit(1);
@@ -39,6 +39,12 @@ public class Project3 {
         System.err.println("Error: the indicated customer is not the customer in file " + validated[6]);
         exit(1);
       }
+    }
+    if(call.getStartTime().compareTo(call.getEndTime()) > 0){ // if start > end
+      System.err.println("Error: the start time is before the end time.");
+      System.err.println("Start Time: " + call.getStartTimeString());
+      System.err.println("End Time: " + call.getEndTimeString());
+      exit(1);
     }
     bill.addPhoneCall(call);
 
@@ -54,7 +60,7 @@ public class Project3 {
       try {
         dumper.dump(bill);
       } catch(IOException e){
-        System.err.println("Error: unable to write to " + e.getMessage());
+        System.err.println("Error: unable to write to text file " + e.getMessage());
         exit(1);
       }
     }
@@ -66,7 +72,7 @@ public class Project3 {
       try {
         dumper.dump(bill);
       } catch(IOException e){
-        System.err.println("Error: unable to write to " + e.getMessage());
+        System.err.println("Error: unable to write to pretty file " + e.getMessage());
         exit(1);
       }
     }

@@ -40,7 +40,7 @@ public class TextParser implements PhoneBillParser {
         java.util.List<String> lines;
         PhoneBill retval = null;
         final String line1Match = "(.+)'s phone bill with .+ phone calls";
-        final String line2Match = "Phone call from ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) to ([2-9]\\d{2}\\-\\d{3}\\-\\d{4}) from (\\d{2}\\/\\d{2}\\/\\d{4}, \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{2}\\/\\d{2}\\/\\d{4}, \\d{1,2}:\\d{2} [AaPp][Mm])";
+        final String line2Match = "Phone call from ([1-9]\\d{2}\\-\\d{3}\\-\\d{4}) to ([1-9]\\d{2}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
         try {
             lines = Files.readAllLines(Paths.get(filename));
         } catch (IOException e) {
