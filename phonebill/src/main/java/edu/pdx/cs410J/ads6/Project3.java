@@ -22,6 +22,8 @@ public class Project3 {
     // Check vs. the null case for the filename string
     boolean isFile = (validated[6] != null);
     isFile = (isFile) ? (!validated[6].isEmpty()) : (isFile);
+    boolean isPretty = (validated[7] != null);
+    isPretty = (isPretty) ? (!validated[7].isEmpty()) : (isPretty);
 
     // read from file
     if(isFile && new File(validated[6]).isFile()){
@@ -49,6 +51,18 @@ public class Project3 {
     if(isFile){
       TextDumper dumper = new TextDumper();
       dumper.setFilename(validated[6]);
+      try {
+        dumper.dump(bill);
+      } catch(IOException e){
+        System.err.println("Error: unable to write to " + e.getMessage());
+        exit(1);
+      }
+    }
+
+    // write to pretty file
+    if(isPretty){
+      PrettyPrinter dumper = new PrettyPrinter();
+      dumper.setFilename(validated[7]);
       try {
         dumper.dump(bill);
       } catch(IOException e){

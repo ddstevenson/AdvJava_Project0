@@ -91,12 +91,12 @@ public class Project3IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Missing or incorrect command line arguments"));
     }
 
-    // TODO: add file validation after implementation
     @Test
-    public void Project1_Main_11ArgPrettyPrint_Success() {
+    public void Project1_Main_11ArgPrettyPrint_Success() throws IOException {
         MainMethodResult result = invokeMain(data[11], data[12], data[1],data[2],data[3],data[4],data[5], data[13], data[6], data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(null));
         assertThat(result.getTextWrittenToStandardOut(), is(""));
+        assertThat(new String(Files.readAllBytes(Paths.get(data[12]))),containsString("0      October 30, 20      5:30:00 AM PST             122-234-2343             133-333-3333    199347"));
     }
 
     @Test
@@ -244,9 +244,8 @@ public class Project3IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardOut(), containsString("By Andrew Stevenson, for Advanced Programming"));
     }
 
-    // TODO: add file validation after implementation
     @Test
-    public void Project1_Main_15ArgPretty_Success() {
+    public void Project1_Main_15ArgPrettyButREADME_Success() {
         MainMethodResult result = invokeMain(data[0], data[8], data[9], data[10], data[11], data[12], data[1],
                 data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), equalTo(0));

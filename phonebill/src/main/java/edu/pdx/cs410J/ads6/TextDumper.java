@@ -9,7 +9,7 @@ import java.util.Collection;
  * Writes a phonebill object to the indicated text file
  */
 public class TextDumper implements PhoneBillDumper {
-    private String filename;
+    protected String filename;
 
     /**
      * @param s name of the file to dump to
