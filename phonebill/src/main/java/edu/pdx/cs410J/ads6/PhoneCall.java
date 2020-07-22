@@ -96,16 +96,27 @@ public class PhoneCall extends AbstractPhoneCall implements java.lang.Comparable
     return dformat.format(end)+ " " + tformat.format(end);
   }
 
+  /**
+   * @return begin time
+   */
   @Override
   public java.util.Date getStartTime(){
     return start;
   }
 
+  /**
+   * @return end time
+   */
   @Override
   public java.util.Date getEndTime(){
     return end;
   }
 
+  /**
+   * @param o the right operand to which to compare this
+   * @return negative if o is greater; 0 if same; positive otherwise
+   *  decide first based on begin date; if same, then switch to end date
+   */
   @Override
   public int compareTo(PhoneCall o) {
     int st = this.start.compareTo(o.start);
