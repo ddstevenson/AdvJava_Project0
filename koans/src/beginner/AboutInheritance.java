@@ -87,7 +87,7 @@ public class AboutInheritance {
         assertEquals(barney instanceof Dog, true);
     }
 
-    // TODO overriding
+
 //
 //    abstract class ParentTwo {
 //        abstract public Collection<?> doStuff();
