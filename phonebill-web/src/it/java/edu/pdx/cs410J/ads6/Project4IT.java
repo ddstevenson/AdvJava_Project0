@@ -47,8 +47,8 @@ public class Project4IT extends InvokeMainTestCase {
         try {
             invokeMain(Project4.class, HOSTNAME, PORT, word);
 
-        } catch (IllegalArgumentException ex) {
-            throw ex.getCause().getCause();
+        } catch (Exception ex) {
+            throw ex.getCause();
         }
     }
 
