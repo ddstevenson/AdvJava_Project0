@@ -27,13 +27,89 @@ public class PhoneBillServletTest {
 
   @Before
   public void setUp() {
-    this.data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30 am",
-            "3/17/21 03:07 am"};
+    this.data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/2020 5:30 am",
+            "3/17/2021 03:07 am"};
   }
 
   @After
   public void tearDown() {
     data = null;
+  }
+
+  @Test
+  public void PhoneBillServlet_doGet_badArgsNoNameNoDates_Failure() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(null);
+    when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(null);
+    when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(null);
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(true);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "The required parameter \"customer\" is missing");
+  }
+
+  @Test
+  public void PhoneBillServlet_doGet_goodArgsOldSessionNoDates_Success() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+    PhoneBill bill = new PhoneBill(data[0]);
+    PhoneCall call = new PhoneCall(data);
+    bill.addPhoneCall(call);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    //when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
+    //when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(false);
+    when(session.getAttribute(PhoneBillServlet.SESSION_ATTRIB)).thenReturn(bill);
+
+    servlet.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+    verify(pw).append(bill.toString());
+  }
+
+  @Test
+  public void PhoneBillServlet_doGet_goodArgsNewSessionNoDates_Success() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+    PhoneBill bill = new PhoneBill(data[0]);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    //when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
+    //when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(true);
+
+    servlet.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+    verify(pw).append(bill.toString());
   }
 
   @Test
@@ -51,14 +127,14 @@ public class PhoneBillServletTest {
     when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
     when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn("10/30/20 5:30");
     when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
-    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(true);
 
     servlet.doPost(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted arguments in HTTP Request.");
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "(Probably) malformatted arguments in HTTP Request.");
   }
 
   @Test
@@ -77,7 +153,7 @@ public class PhoneBillServletTest {
     when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
     // Missing arg!
     when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(null);
-    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(true);
@@ -102,7 +178,7 @@ public class PhoneBillServletTest {
     when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
     when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
     when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
-    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(true);
@@ -130,7 +206,7 @@ public class PhoneBillServletTest {
     when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
     when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
     when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
-    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getContextPath()).thenReturn(PhoneBillServlet.APPLICATION_PATH);
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(false);

@@ -20,13 +20,14 @@ import java.util.Map;
  */
 public class PhoneBillServlet extends HttpServlet
 {
-    static final String WORD_PARAMETER = "word";
-    public static final String SESSION_ATTRIB = "PhoneBill";
-    public static final String CUSTOMER_PARAM = "customer";
-    public static final String CALLER_PARAM = "callerNumber";
-    public static final String CALLEE_PARAM = "calleeNumber";
-    public static final String START_PARAM = "start";
-    public static final String END_PARAM = "end";
+    static final String SESSION_ATTRIB = "PhoneBill";
+    static final String CUSTOMER_PARAM = "customer";
+    static final String CALLER_PARAM = "callerNumber";
+    static final String CALLEE_PARAM = "calleeNumber";
+    static final String START_PARAM = "start";
+    static final String END_PARAM = "end";
+    static final String APPLICATION_PATH = "/calls";
+    static final String CONTENT_TYPE = "text/plain";
 
     private final Map<String, String> dictionary = new HashMap<>();
 
@@ -44,15 +45,36 @@ public class PhoneBillServlet extends HttpServlet
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        response.setContentType( "text/plain" );
+        response.setContentType( CONTENT_TYPE );
+        PrintWriter pw = response.getWriter();
+        HttpSession session = request.getSession();
+        PhoneBill bill;
 
-        String word = getParameter( WORD_PARAMETER, request );
-        if (word != null) {
-            writeDefinition(word, response);
+        String name = getParameter( CUSTOMER_PARAM, request );
+        String start = getParameter( START_PARAM, request );
+        String end = getParameter( END_PARAM, request );
+        Boolean bPretty = (start != null && end != null);
 
+        if(name == null){
+            missingRequiredParameter( response, CUSTOMER_PARAM );
+        }else if (start == null ^ end == null){
+            missingRequiredParameter( response, (start==null) ?  START_PARAM : END_PARAM);
+        } else if(request.getContextPath().equals(APPLICATION_PATH)){ // Including b/c we don't know what scoring web.xml file will be
+
+            if(session.isNew()){
+                bill = new PhoneBill(name);
+            } else {
+                bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
+            }
+
+            pw.append(bill.toString());
+            response.setStatus( HttpServletResponse.SC_OK);
+            pw.flush();
         } else {
-            writeAllDictionaryEntries(response);
+            response.sendError( HttpServletResponse.SC_NOT_FOUND,"The specified resource was not found.");
+            pw.flush();
         }
+        // Nothing should occur after final else: everything gets handled under its own if block
     }
 
 
@@ -68,7 +90,7 @@ public class PhoneBillServlet extends HttpServlet
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
-        response.setContentType( "text/plain" );
+        response.setContentType( CONTENT_TYPE );
         PrintWriter pw = response.getWriter();
         HttpSession session = request.getSession();
         PhoneCall call;
@@ -91,10 +113,10 @@ public class PhoneBillServlet extends HttpServlet
             missingRequiredParameter( response, START_PARAM );
         }else if(end == null){
             missingRequiredParameter( response, END_PARAM );
-        }else if(request.getContextPath().equals("/calls")){ // Including b/c we don't know what scoring web.xml file will be
+        }else if(request.getContextPath().equals(APPLICATION_PATH)){ // Including b/c we don't know what scoring web.xml file will be
 
             if(session.isNew()){
-                bill = new PhoneBill();
+                bill = new PhoneBill(name);
             } else {
                 bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
             }
@@ -103,7 +125,7 @@ public class PhoneBillServlet extends HttpServlet
                 call = new PhoneCall(args);
                 bill.addPhoneCall(call);
             } catch (Exception e){ // Probably bad args are responsible for exceptions
-                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted arguments in HTTP Request.");
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "(Probably) malformatted arguments in HTTP Request.");
                 pw.flush();
                 return;
             }
