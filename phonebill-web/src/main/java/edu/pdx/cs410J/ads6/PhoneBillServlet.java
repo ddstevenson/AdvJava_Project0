@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -20,15 +21,25 @@ import java.util.Map;
 public class PhoneBillServlet extends HttpServlet
 {
     static final String WORD_PARAMETER = "word";
-    static final String DEFINITION_PARAMETER = "definition";
+    public static final String SESSION_ATTRIB = "PhoneBill";
+    public static final String CUSTOMER_PARAM = "customer";
+    public static final String CALLER_PARAM = "callerNumber";
+    public static final String CALLEE_PARAM = "calleeNumber";
+    public static final String START_PARAM = "start";
+    public static final String END_PARAM = "end";
 
     private final Map<String, String> dictionary = new HashMap<>();
 
+
     /**
-     * Handles an HTTP GET request from a client by writing the definition of the
-     * word specified in the "word" HTTP parameter to the HTTP response.  If the
-     * "word" parameter is not specified, all of the entries in the dictionary
-     * are written to the HTTP response.
+     * @param request the HttpServletRequest object passed in to the servlet
+     * @param response the HttpServletResponse object passed in to the servlet
+     * @throws ServletException
+     * @throws IOException
+     * @implSpec customer=name -> GET returns all calls in the phone bill formatted using the TextDumper.
+     * customer = name, start=startDateTime, end=endDateTime -> GET returns all of given phone bill’s
+     * calls (in the format used by TextDumper) that occurred between the start date/time and the end date/time.
+     * The date/time format in the URL is the same as on the command line.
      */
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
@@ -44,47 +55,82 @@ public class PhoneBillServlet extends HttpServlet
         }
     }
 
+
     /**
-     * Handles an HTTP POST request by storing the dictionary entry for the
-     * "word" and "definition" request parameters.  It writes the dictionary
-     * entry to the HTTP response.
+     * @param request the HttpServletRequest object passed in to the servlet
+     * @param response the HttpServletResponse object passed in to the servlet
+     * @throws ServletException
+     * @throws IOException
+     * @implSpec POST creates a new call from the HTTP request parameters customer, callerNumber,
+     * calleeNumber, start, and end. If the phone bill does not exist, a new one should be
+     * created.
      */
     @Override
     protected void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
         response.setContentType( "text/plain" );
-
-        String word = getParameter(WORD_PARAMETER, request );
-        if (word == null) {
-            missingRequiredParameter(response, WORD_PARAMETER);
-            return;
-        }
-
-        String definition = getParameter(DEFINITION_PARAMETER, request );
-        if ( definition == null) {
-            missingRequiredParameter( response, DEFINITION_PARAMETER );
-            return;
-        }
-
-        this.dictionary.put(word, definition);
-
         PrintWriter pw = response.getWriter();
-        pw.println(Messages.definedWordAs(word, definition));
-        pw.flush();
+        HttpSession session = request.getSession();
+        PhoneCall call;
+        PhoneBill bill;
 
-        response.setStatus( HttpServletResponse.SC_OK);
+        String name = getParameter( CUSTOMER_PARAM, request );
+        String caller = getParameter( CALLER_PARAM, request );
+        String callee = getParameter( CALLEE_PARAM, request );
+        String start = getParameter( START_PARAM, request );
+        String end = getParameter( END_PARAM, request );
+        String[] args = new String[]{name, caller, callee, start ,end};
+
+        if(name == null){
+            missingRequiredParameter( response, CUSTOMER_PARAM );
+        }else if(caller == null){
+            missingRequiredParameter( response, CALLER_PARAM );
+        }else if(callee == null){
+            missingRequiredParameter( response, CALLEE_PARAM );
+        }else if(start == null){
+            missingRequiredParameter( response, START_PARAM );
+        }else if(end == null){
+            missingRequiredParameter( response, END_PARAM );
+        }else if(request.getContextPath().equals("/calls")){ // Including b/c we don't know what scoring web.xml file will be
+
+            if(session.isNew()){
+                bill = new PhoneBill();
+            } else {
+                bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
+            }
+
+            try {
+                call = new PhoneCall(args);
+                bill.addPhoneCall(call);
+            } catch (Exception e){ // Probably bad args are responsible for exceptions
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted arguments in HTTP Request.");
+                pw.flush();
+                return;
+            }
+
+            session.setAttribute(SESSION_ATTRIB, bill);
+            response.setStatus( HttpServletResponse.SC_OK);
+            pw.flush();
+        } else {
+            response.sendError( HttpServletResponse.SC_NOT_FOUND,"The specified resource was not found.");
+            pw.flush();
+        }
+        // Nothing should occur after final else: everything gets handled under its own if block
     }
 
+
     /**
-     * Handles an HTTP DELETE request by removing all dictionary entries.  This
-     * behavior is exposed for testing purposes only.  It's probably not
-     * something that you'd want a real application to expose.
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @implSpec No longer deletes all sessions--only the current user's data is removed now, as per a logout
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
 
-        this.dictionary.clear();
+        request.getSession().invalidate();
 
         PrintWriter pw = response.getWriter();
         pw.println(Messages.allDictionaryEntriesDeleted());

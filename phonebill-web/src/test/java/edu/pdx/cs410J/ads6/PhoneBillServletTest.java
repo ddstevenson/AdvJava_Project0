@@ -1,11 +1,15 @@
 package edu.pdx.cs410J.ads6;
 
+import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,7 +23,77 @@ import static org.mockito.Mockito.*;
  * provide mock http requests and responses.
  */
 public class PhoneBillServletTest {
+  private String[] data;
 
+  @Before
+  public void setUp() {
+    this.data = new String[]{"Andrew","122-234-2343","133-333-3333","10/30/20 5:30 am",
+            "3/17/21 03:07 am"};
+  }
+
+  @After
+  public void tearDown() {
+    data = null;
+  }
+
+  @Test
+  public void PhoneBillServlet_doPost_goodArgsNewSession_Success() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    when(request.getParameter(PhoneBillServlet.CALLER_PARAM)).thenReturn(data[1]);
+    when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
+    when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
+    when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
+    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(true);
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+    verify(session).setAttribute(anyString(), anyObject());
+  }
+
+
+  @Test
+  public void PhoneBillServlet_doPost_goodArgsOldSession_Success() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+    PhoneBill bill = new PhoneBill();
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    when(request.getParameter(PhoneBillServlet.CALLER_PARAM)).thenReturn(data[1]);
+    when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
+    when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
+    when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
+    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(false);
+    when(session.getAttribute(PhoneBillServlet.SESSION_ATTRIB)).thenReturn(bill);
+
+    servlet.doPost(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+    verify(session).setAttribute(anyString(), anyObject());
+  }
+
+  // This is the original sample test that shipped with the code; it worked originally, but now
+  // Exists only for my reference.
+/*
   @Test
   public void initiallyServletContainsNoDictionaryEntries() throws ServletException, IOException {
     PhoneBillServlet servlet = new PhoneBillServlet();
@@ -36,6 +110,9 @@ public class PhoneBillServletTest {
     verify(pw).println(Messages.formatWordCount(expectedWords));
     verify(response).setStatus(HttpServletResponse.SC_OK);
   }
+
+
+
 
   @Test
   public void addOneWordToDictionary() throws ServletException, IOException {
@@ -68,5 +145,5 @@ public class PhoneBillServletTest {
 
     assertThat(servlet.getDefinition(word), equalTo(definition));
   }
-
+*/
 }
