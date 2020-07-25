@@ -50,7 +50,8 @@ public class PhoneCall extends AbstractPhoneCall implements Comparable<PhoneCall
       start = format.parse(s[3]);
       end = format.parse(s[4]);
     } catch (ParseException p){
-      assert false : "Error: Date strings passed to PhoneCall should be pre-validated.\nStart Time: " + s[3] + "\nEnd Time: " + s[4];
+      //assert false : "Error: Date strings passed to PhoneCall should be pre-validated.\nStart Time: " + s[3] + "\nEnd Time: " + s[4];
+      throw new IllegalArgumentException("A date string passed to PhoneCall(String) was not pre-validated.\nStart Time: " + s[3] + "\nEnd Time: " + s[4]);
     }
   }
 

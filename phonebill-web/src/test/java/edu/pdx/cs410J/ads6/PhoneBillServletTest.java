@@ -37,6 +37,57 @@ public class PhoneBillServletTest {
   }
 
   @Test
+  public void PhoneBillServlet_doPost_MalformattedArg_Failure() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    when(request.getParameter(PhoneBillServlet.CALLER_PARAM)).thenReturn(data[1]);
+    when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
+    when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn("10/30/20 5:30");
+    when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(data[4]);
+    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(true);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted arguments in HTTP Request.");
+  }
+
+  @Test
+  public void PhoneBillServlet_doPost_MissingArg_Failure() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpSession session = mock(HttpSession.class);
+    PrintWriter pw = mock(PrintWriter.class);
+
+    when(response.getWriter()).thenReturn(pw);
+    when(request.getParameter(PhoneBillServlet.CUSTOMER_PARAM)).thenReturn(data[0]);
+    when(request.getParameter(PhoneBillServlet.CALLER_PARAM)).thenReturn(data[1]);
+    when(request.getParameter(PhoneBillServlet.CALLEE_PARAM)).thenReturn(data[2]);
+    when(request.getParameter(PhoneBillServlet.START_PARAM)).thenReturn(data[3]);
+    // Missing arg!
+    when(request.getParameter(PhoneBillServlet.END_PARAM)).thenReturn(null);
+    when(request.getContextPath()).thenReturn("/calls");
+    when(request.getSession()).thenReturn(session);
+
+    when(session.isNew()).thenReturn(true);
+
+    servlet.doPost(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "The required parameter \"end\" is missing");
+  }
+
+  @Test
   public void PhoneBillServlet_doPost_goodArgsNewSession_Success() throws ServletException, IOException {
     PhoneBillServlet servlet = new PhoneBillServlet();
 
