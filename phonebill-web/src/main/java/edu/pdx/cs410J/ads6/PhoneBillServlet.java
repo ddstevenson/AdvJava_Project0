@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,7 +68,20 @@ public class PhoneBillServlet extends HttpServlet
                 bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
             }
 
-            pw.append(bill.toString());
+            if(bPretty){
+                PhoneCall call = new PhoneCall(new String[]{"","999-999-9999","999-999-9999",start,end});   // Using PhoneCall to parse the input datetime strings
+                // Error out if the calls are mis-ordered
+                if(call.getStartTime().compareTo(call.getEndTime()) > 0){
+                    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted or incorrect arguments in HTTP Request.");
+                    pw.flush();
+                    return;
+                }
+                PrettyPrinter printer = new PrettyPrinter();
+                printer.filteredStreamDump(bill,call.getStartTime(),call.getEndTime(),pw);
+            } else{
+                pw.append(bill.toString());
+            }
+
             response.setStatus( HttpServletResponse.SC_OK);
             pw.flush();
         } else {
@@ -123,9 +137,12 @@ public class PhoneBillServlet extends HttpServlet
 
             try {
                 call = new PhoneCall(args);
+                 if(call.getStartTime().compareTo(call.getEndTime()) > 0){
+                    throw new Exception();
+                }
                 bill.addPhoneCall(call);
             } catch (Exception e){ // Probably bad args are responsible for exceptions
-                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "(Probably) malformatted arguments in HTTP Request.");
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "Malformatted or incorrect arguments in HTTP Request.");
                 pw.flush();
                 return;
             }

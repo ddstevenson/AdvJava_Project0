@@ -3,10 +3,7 @@ package edu.pdx.cs410J.ads6;
 import edu.pdx.cs410J.AbstractPhoneBill;
 import edu.pdx.cs410J.AbstractPhoneCall;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Class representing an entire phone bill. To be expanded in future iterations.
@@ -53,6 +50,23 @@ public class PhoneBill extends AbstractPhoneBill{
         Collection<String> retval = new LinkedList<>();
         for(AbstractPhoneCall c : calls){
             retval.add(c.toString());
+        }
+        return retval;
+    }
+
+    /**
+     * @param b begin time
+     * @param e end time
+     * @return list of all phone calls with start times between b and e, inclusive
+     */
+    public List<String> getPhoneCalls(Date b, Date e){
+        Collections.sort(calls);
+        List<String> retval = new LinkedList<>();
+        for(PhoneCall c: calls){
+            if(b.compareTo(c.getStartTime()) <= 0 && e.compareTo(c.getStartTime()) >= 0){
+                //emit
+                retval.add(c.toString());
+            } // else do not emit
         }
         return retval;
     }

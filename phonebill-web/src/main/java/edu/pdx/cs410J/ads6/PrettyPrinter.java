@@ -4,8 +4,10 @@ import edu.pdx.cs410J.AbstractPhoneBill;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,15 @@ public class PrettyPrinter extends TextDumper {
             out.write(ConvertSecondLine(s,l.indexOf(s)).getBytes());
         }
         out.close();
+    }
+
+    public void filteredStreamDump(PhoneBill bill, Date b, Date e, PrintWriter pw) throws IOException {
+        pw.write(ConvertFirstLine(bill.toString()));
+        ArrayList<String> l = new ArrayList<String>(bill.getPhoneCalls(b,e));
+        for (String s : l){
+            pw.write(ConvertSecondLine(s,l.indexOf(s)));
+        }
+
     }
 
     /**
