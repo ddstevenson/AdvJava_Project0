@@ -51,7 +51,7 @@ public class Project4IT extends InvokeMainTestCase {
             throw ex.getCause();
         }
     }
-
+/*
     @Test
     public void test4AddDefinition() {
         String word = "WORD";
@@ -69,5 +69,5 @@ public class Project4IT extends InvokeMainTestCase {
         result = invokeMain( Project4.class, HOSTNAME, PORT );
         out = result.getTextWrittenToStandardOut();
         assertThat(out, out, containsString(Messages.formatDictionaryEntry(word, definition)));
-    }
+    } */
 }

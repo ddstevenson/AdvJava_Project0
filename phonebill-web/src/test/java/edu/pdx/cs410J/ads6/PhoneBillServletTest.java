@@ -117,7 +117,7 @@ public class PhoneBillServletTest {
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(false);
-    when(session.getAttribute(PhoneBillServlet.SESSION_ATTRIB)).thenReturn(bill);
+    when(session.getAttribute(data1[0])).thenReturn(bill);
 
     servlet.doGet(request, response);
 
@@ -146,7 +146,7 @@ public class PhoneBillServletTest {
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(false);
-    when(session.getAttribute(PhoneBillServlet.SESSION_ATTRIB)).thenReturn(bill);
+    when(session.getAttribute(data1[0])).thenReturn(bill);
 
     servlet.doGet(request, response);
 
@@ -227,7 +227,7 @@ public class PhoneBillServletTest {
     when(request.getSession()).thenReturn(session);
 
     when(session.isNew()).thenReturn(false);
-    when(session.getAttribute(PhoneBillServlet.SESSION_ATTRIB)).thenReturn(bill);
+    when(session.getAttribute(data1[0])).thenReturn(bill);
 
     servlet.doGet(request, response);
 

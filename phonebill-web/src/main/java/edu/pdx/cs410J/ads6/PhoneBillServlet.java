@@ -62,10 +62,9 @@ public class PhoneBillServlet extends HttpServlet
             missingRequiredParameter( response, (start==null) ?  START_PARAM : END_PARAM);
         } else if(request.getContextPath().equals(APPLICATION_PATH)){ // Including b/c we don't know what scoring web.xml file will be
 
-            if(session.isNew()){
+            bill = (PhoneBill) session.getAttribute(name);
+            if(bill == null){
                 bill = new PhoneBill(name);
-            } else {
-                bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
             }
 
             if(bPretty){
@@ -129,10 +128,9 @@ public class PhoneBillServlet extends HttpServlet
             missingRequiredParameter( response, END_PARAM );
         }else if(request.getContextPath().equals(APPLICATION_PATH)){ // Including b/c we don't know what scoring web.xml file will be
 
-            if(session.isNew()){
+            bill = (PhoneBill) session.getAttribute(name);
+            if(bill == null){
                 bill = new PhoneBill(name);
-            } else {
-                bill = (PhoneBill) session.getAttribute(SESSION_ATTRIB);
             }
 
             try {
@@ -147,7 +145,7 @@ public class PhoneBillServlet extends HttpServlet
                 return;
             }
 
-            session.setAttribute(SESSION_ATTRIB, bill);
+            session.setAttribute(name, bill);
             response.setStatus( HttpServletResponse.SC_OK);
             pw.flush();
         } else {
