@@ -4,6 +4,7 @@ import com.google.common.annotations.VisibleForTesting;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -29,6 +30,38 @@ public class PhoneBillRestClient extends HttpRequestHelper
     public PhoneBillRestClient( String hostName, int port )
     {
         this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
+    }
+
+
+    public String getPhoneBill(String name) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("customer",name);
+        Response response = get(this.url, map);
+        throwExceptionIfNotOkayHttpStatus(response);
+        return response.getContent();
+    }
+
+
+    public String getPhoneBill(String name, String begin, String end) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("customer",name);
+        map.put("start",begin);
+        map.put("end",end);
+        Response response = get(this.url, map);
+        throwExceptionIfNotOkayHttpStatus(response);
+        return response.getContent();
+    }
+
+    public String addPhoneCall(String customer, PhoneCall call) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        map.put("customer", customer);
+        map.put("callerNumber",call.getCaller());
+        map.put("calleeNumber",call.getCallee());
+        map.put("start",call.getStartTimeString());
+        map.put("end",call.getEndTimeString());
+        Response response = post(this.url, map);
+        throwExceptionIfNotOkayHttpStatus(response);
+        return response.getContent();
     }
 
     /**
@@ -59,7 +92,7 @@ public class PhoneBillRestClient extends HttpRequestHelper
       return post(this.url, dictionaryEntries);
     }
 
-    public void removeAllDictionaryEntries() throws IOException {
+    public void removeAllPhoneCalls() throws IOException {
       Response response = delete(this.url, Map.of());
       throwExceptionIfNotOkayHttpStatus(response);
     }

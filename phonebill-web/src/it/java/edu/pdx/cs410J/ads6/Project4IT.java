@@ -19,13 +19,13 @@ import static org.hamcrest.Matchers.equalTo;
 public class Project4IT extends InvokeMainTestCase {
     private static final String HOSTNAME = "localhost";
     private static final String PORT = System.getProperty("http.port", "8080");
-
+/*
     @Test
     public void test0RemoveAllMappings() throws IOException {
       PhoneBillRestClient client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
       client.removeAllDictionaryEntries();
     }
-
+*/
     @Test
     public void test1NoCommandLineArguments() {
         MainMethodResult result = invokeMain( Project4.class );
@@ -40,7 +40,7 @@ public class Project4IT extends InvokeMainTestCase {
         String out = result.getTextWrittenToStandardOut();
         assertThat(out, out, containsString(Messages.formatWordCount(0)));
     }
-
+/*
     @Test(expected = PhoneBillRestException.class)
     public void test3NoDefinitionsThrowsAppointmentBookRestException() throws Throwable {
         String word = "WORD";
@@ -51,7 +51,7 @@ public class Project4IT extends InvokeMainTestCase {
             throw ex.getCause();
         }
     }
-/*
+
     @Test
     public void test4AddDefinition() {
         String word = "WORD";

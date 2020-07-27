@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * style line itemization
  */
 public class PrettyPrinter extends TextDumper {
-    final private String line1Match = "(.+)'s phone bill with .+ phone calls";
+    final private String line1Match = "^(.+)'s .*";
     final private String line2Match = "Phone call from (\\d{3}\\-\\d{3}\\-\\d{4}) to (\\d{3}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
     final private String[] cols = new String[]{"%10s","%20s","%20s","%25s","%25s","%10s"};
     final private String[] headers = new String[]{"No.", "Date", "Time", "Caller", "Callee", "Minutes"};
@@ -40,10 +40,10 @@ public class PrettyPrinter extends TextDumper {
     }
 
     public void filteredStreamDump(PhoneBill bill, Date b, Date e, PrintWriter pw) throws IOException {
-        pw.write(ConvertFirstLine(bill.toString()));
+        pw.append(ConvertFirstLine(bill.toString()));
         ArrayList<String> l = new ArrayList<String>(bill.getPhoneCalls(b,e));
         for (String s : l){
-            pw.write(ConvertSecondLine(s,l.indexOf(s)));
+            pw.append(ConvertSecondLine(s,l.indexOf(s)));
         }
 
     }
@@ -53,8 +53,9 @@ public class PrettyPrinter extends TextDumper {
      * @return the pretty string representation of s
      */
     private String ConvertFirstLine(String s){
-        Pattern p = Pattern.compile(line1Match);
+        Pattern p = Pattern.compile(this.line1Match);
         Matcher m = p.matcher(s);
+        m.find();
         assert m.matches() : "Assert Failed: invalid string passed to ConvertFirstLine()";
         StringBuilder retval = new StringBuilder();
         retval.append("Customer: ").append(m.group(1)).append(System.lineSeparator()+System.lineSeparator());
@@ -72,6 +73,7 @@ public class PrettyPrinter extends TextDumper {
     private String ConvertSecondLine(String s, int num){
         Pattern p = Pattern.compile(line2Match);
         Matcher m = p.matcher(s);
+        m.find();
         assert m.matches() : "Assert Failed: invalid string passed to ConvertSecondLine()";
         String[] param = new String[]{"temp", m.group(1), m.group(2),
                 m.group(3).replace(",",""), m.group(4).replace(",","")};
