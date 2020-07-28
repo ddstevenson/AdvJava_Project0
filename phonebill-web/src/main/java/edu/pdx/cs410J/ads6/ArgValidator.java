@@ -155,31 +155,32 @@ public class ArgValidator implements IArgValidator{
      * Prints readme contents for user.
      */
     private void print_readme(){
-        System.out.println("Project 3\n" +
-                "By Andrew Stevenson, for Advanced Programming in Java at Portland State University.\n" +
-                "A simple command line parser that accepts as input the record of a single phone call. \n" +
-                "If the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed.\n" +
-                "Optionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill.\n" +
-                "Call this program without command-line arguments to view usage instructions.");
+        System.out.println("Project 4" + System.lineSeparator() + 
+                "By Andrew Stevenson, for Advanced Programming in Java at Portland State University." + System.lineSeparator() + 
+                "\tA more complex command line utility that accepts as input the record of a single phone call. " + System.lineSeparator() +
+                "\tData is received from a remote REST web service. " + System.lineSeparator() +
+                "\tIf the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed." + System.lineSeparator() +
+                "\tOptionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill." + System.lineSeparator() +
+                "\tCall this program without command-line arguments to view usage instructions.");
     }
 
     /**
      * Prints usage blurb to assist user in choosing correct arguments.
      */
     private void print_usage(){
-        System.out.println("usage: java edu.pdx.cs410J.ads6.Project3 [options] <args>\n" +
-                "\targs are (in this order):\n" +
-                "\t\tcustomer Person whose phone bill we’re modeling\n" +
-                "\t\tcallerNumber Phone number of caller\n" +
-                "\t\tcalleeNumber Phone number of person who was called\n" +
-                "\t\tstart Date and time call began (24-hour time)\n" +
-                "\t\tend Date and time call ended (24-hour time)\n" +
-                "\toptions are (options may appear in any order):\n" +
-                "\t\t-pretty file  Pretty print the phone bill to a text file or standard out (file -).\n" +
-                "\t\t-textFile file Where to read/write the phone bill\n" +
-                "\t\t-print Prints a description of the new phone call\n" +
-                "\t\t-README Prints a README for this project and exits\n" +
-                "\tDate and time should be in the format: mm/dd/yyyy hh:mm\n");
+        System.out.println("usage: java edu.pdx.cs410J.ads6.Project4 [options] <args>" + System.lineSeparator() + 
+                "\\targs are (in this order):" + System.lineSeparator() + 
+                "\\t\\tcustomer \\tPerson whose phone bill we’re modeling" + System.lineSeparator() + 
+                "\\t\\tcallerNumber \\tPhone number of caller" + System.lineSeparator() + 
+                "\\t\\tcalleeNumber \\tPhone number of person who was called" + System.lineSeparator() + 
+                "\\t\\tstart \\tDate and time call began" + System.lineSeparator() + 
+                "\\tend \\tDate and time call ended" + System.lineSeparator() + 
+                "\\toptions are (options may appear in any order):" + System.lineSeparator() + 
+                "\\t\\t-host \\thostname Host computer on which the server runs" + System.lineSeparator() + 
+                "\\t\\t-port \\tport Port on which the server is listening" + System.lineSeparator() + 
+                "\\t\\t-search \\tPhone calls should be searched for" + System.lineSeparator() + 
+                "\\t\\t-print \\tPrints a description of the new phone call" + System.lineSeparator() + 
+                "\\t\\t-README \\tPrints a README for this project and exits");
     }
 
     /**
