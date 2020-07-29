@@ -74,8 +74,11 @@ public class PhoneBillServlet extends HttpServlet
                     pw.flush();
                     return;
                 }
-                PrettyPrinter printer = new PrettyPrinter();
-                printer.filteredStreamDump(bill,call.getStartTime(),call.getEndTime(),pw);
+                pw.append(bill.toString());
+                for (String s : bill.getPhoneCalls(call.getStartTime(),call.getEndTime())){
+                    pw.append(System.lineSeparator());
+                    pw.append(s);
+                }
             } else{
                 pw.append(bill.toString());
                 for (String s : bill.getPhoneCalls()){

@@ -12,6 +12,7 @@ import static java.lang.System.exit;
 public class ArgValidator implements IArgValidator{
 
     /**
+     * @implSpec Check the args, sort them into a predictable order, and exit program w/ error if invalid
      * @param args The raw input from the command line as passed in to main().
      * @return String array with the following elements:
      * 1) Name
@@ -20,60 +21,63 @@ public class ArgValidator implements IArgValidator{
      * 4) Begin date and time
      * 5) End date and time
      * 6) "true" or "false" indicating whether -print option was specified
-     * 7) name of the file to be read from / written to if -textFile specified; empty otherwise
-     * 8) name of the file to be pretty printed to if -pretty option specified; empty otherwise
+     * 7) "true" or "false" indicating whether -search option was specified
+     * 8) host name, if supplied
+     * 9) port number, if host name was specified
      * @implNote This method has multiple side effects, since it exits and prints to
      * stderr and stdout depending on the content of the command line args.
      */
     public String[]  validate(String[] args){
-        String[] retval = new String[8];
+        String[] retval = new String[9];
         boolean bPrint = false;
-        boolean bWrite = false;
-        boolean bPretty = false;
+        boolean bPort = false;
+        boolean bHost = false;
+        boolean bSearch = false;
 
-        if (args == null){
-            System.err.println("Missing or incorrect command line arguments.");
-            print_usage();
-            exit(1);
-        }
+        if (args == null)
+            exit_error("Missing command line arguments.", true);
 
-        for(int x = 0; x < min(args.length,6); ++x){ //max total 6 option strings in args[]
+        // First we need to count & acknowledge which options were specified
+        for(int x = 0; x < min(args.length,7); ++x){ //max total 7 option strings in args[]
             if(args[x] == null){
                 break; // catch this outcome below
             } else if(args[x].equals("-README")){
-                print_readme();
-                exit(0);
+                exit_readme();
             } else if (args[x].equals("-print")){
                 bPrint = true;
-            } else if (args[x].equals("-textFile")){
-                bWrite = true;
-            } else if (args[x].equals("-pretty")){
-                bPretty = true;
-            } else if ( !(x > 0 && (args[x - 1].equals("-textFile") || args[x - 1].equals("-pretty")))){
+            } else if (args[x].equals("-port")){
+                bPort = true;
+            } else if (args[x].equals("-host")){
+                bHost = true;
+            } else if (args[x].equals("-search")){
+                bSearch = true;
+            } else if ( !(x > 0 && (args[x - 1].equals("-port") || args[x - 1].equals("-host")))){
                 break;  // once we hit something that's not an option, we're done
             }
         }
 
-        //ensure correct # of args
+        if(bHost ^ bPort)
+            exit_error("Either both host and port, or neither host nor port must be specified.", true);
+
+        // Now that we know which options were specified, we can verify the correct number of args were submitted
         int num_opt_args = (bPrint) ? (1) : (0);
-        num_opt_args += (bWrite) ? (2) : (0);
-        num_opt_args += (bPretty) ? (2) : (0);
+        num_opt_args += (bPort) ? (4) : (0);            // Both or neither, since we're checking xor above
+        num_opt_args += (bSearch) ? (1) : (0);
         if(args.length != (9 + num_opt_args)) { // magic number: 1 + 1 + 1 + 3 +3 = 9
-            System.err.println("Missing or incorrect command line arguments.");
-            print_usage();
-            exit(1);
+            exit_error("Missing or incorrect command line arguments.", true);
         }
 
-        //put the right args in the correct retval buckets
+        // Exactly right # of args are present, let's put the right args in the correct retval buckets
         for(int ret_index = 0, args_index = 0; ret_index < 5; ++args_index){
             if(args[args_index].equals("-print") ||
-                    args[args_index].equals("-textFile") ||
-                    args[args_index].equals("-pretty")) {
+                    (args[args_index].equals("-host")) ||
+                    (args[args_index].equals("-port")) ||
+                    args[args_index].equals("-search")) {
                 continue;
             }
-            if(args_index != 0 && args[args_index - 1].equals("-textFile")){
-                retval[6] = args[args_index];
-            }  else if(args_index != 0 && args[args_index - 1].equals("-pretty")) {
+            if(args_index != 0 && args[args_index - 1].equals("-port")){
+                retval[8] = args[args_index];
+            }  else if(args_index != 0 && args[args_index - 1].equals("-host")) {
                 retval[7] = args[args_index];
             } else if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
                 if(retval[ret_index] == null){  // field is empty; set to date field
@@ -89,7 +93,8 @@ public class ArgValidator implements IArgValidator{
                 ++ret_index;
             }
         }
-        retval[5] = String.valueOf(bPrint); // print command must be dispatched from main()
+        retval[5] = String.valueOf(bPrint);
+        retval[6] = String.valueOf(bSearch);
 
         //Finally validate the contents of the arguments
         for(int ret_index = 0; ret_index < retval.length; ++ret_index){
@@ -138,10 +143,13 @@ public class ArgValidator implements IArgValidator{
                 case 5: // boolean print value
                     // Nothing to do here
                     break;
-                case 6: // Filename, if applicable
+                case 6: // boolean search value
                     // Do nothing
                     break;
-                case 7: // Pretty filename, if applicable
+                case 7: // host name
+                    // Do nothing
+                    break;
+                case 8: // port number
                     // Do nothing
                     break;
                 default: assert false: "Invalid index for retval in validate()";
@@ -152,9 +160,22 @@ public class ArgValidator implements IArgValidator{
     }
 
     /**
+     * @param e error message to display on err.out
+     * @param usage true if we will print usage info; false otherwise
+     * @implSpec This function displays the supplied string and optionally prints usage information.
+     */
+    private void exit_error(String e, boolean usage){
+        System.err.println(e);
+        if(usage)
+            exit_usage(1);
+        else
+            exit(1);
+    }
+
+    /**
      * Prints readme contents for user.
      */
-    private void print_readme(){
+    private void exit_readme(){
         System.out.println("Project 4" + System.lineSeparator() + 
                 "By Andrew Stevenson, for Advanced Programming in Java at Portland State University." + System.lineSeparator() + 
                 "\tA more complex command line utility that accepts as input the record of a single phone call. " + System.lineSeparator() +
@@ -162,12 +183,13 @@ public class ArgValidator implements IArgValidator{
                 "\tIf the input arguments are valid, no message is returned; otherwise appropriate usage and error information will be displayed." + System.lineSeparator() +
                 "\tOptionally, this program may also reads and writes to a file where an individual's phone call records are maintained in the form of a phone bill." + System.lineSeparator() +
                 "\tCall this program without command-line arguments to view usage instructions.");
+        exit(0);
     }
 
     /**
      * Prints usage blurb to assist user in choosing correct arguments.
      */
-    private void print_usage(){
+    private void exit_usage(int code){
         System.out.println("usage: java edu.pdx.cs410J.ads6.Project4 [options] <args>" + System.lineSeparator() + 
                 "\\targs are (in this order):" + System.lineSeparator() + 
                 "\\t\\tcustomer \\tPerson whose phone bill we’re modeling" + System.lineSeparator() + 
@@ -181,6 +203,7 @@ public class ArgValidator implements IArgValidator{
                 "\\t\\t-search \\tPhone calls should be searched for" + System.lineSeparator() + 
                 "\\t\\t-print \\tPrints a description of the new phone call" + System.lineSeparator() + 
                 "\\t\\t-README \\tPrints a README for this project and exits");
+        exit(code);
     }
 
     /**

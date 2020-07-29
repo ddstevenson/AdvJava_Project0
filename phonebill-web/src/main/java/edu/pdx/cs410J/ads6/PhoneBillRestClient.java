@@ -49,7 +49,8 @@ public class PhoneBillRestClient extends HttpRequestHelper
         map.put("end",end);
         Response response = get(this.url, map);
         throwExceptionIfNotOkayHttpStatus(response);
-        return response.getContent();
+        PrettyPrinter printer = new PrettyPrinter();
+        return printer.filteredStreamDump(response.getContent());
     }
 
     public String addPhoneCall(String customer, PhoneCall call) throws IOException {

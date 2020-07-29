@@ -115,7 +115,7 @@ public class PhoneBillServletTest {
     servlet.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK);
-    verify(pw,times(4)).append(anyString()); // 3 calls + the header = 4
+    verify(pw,times(7)).append(anyString()); // 3 calls + the header = 4
   }
 
   private void addPhoneCallToServlet(PhoneCall call) throws ServletException, IOException {
@@ -149,7 +149,7 @@ public class PhoneBillServletTest {
     servlet.doGet(request, response);
 
     verify(response).setStatus(HttpServletResponse.SC_OK);
-    verify(pw,times(3)).append(anyString()); // 2 calls plus the header = 3
+    verify(pw,times(5)).append(anyString()); // 2 calls plus the header = 3
   }
 
   @Test
@@ -170,7 +170,7 @@ public class PhoneBillServletTest {
 
     verify(response).setStatus(HttpServletResponse.SC_OK);
     verify(pw).append(not(contains("133-333-3333")));
-    verify(pw).append(contains("Customer: Andrew"));
+    verify(pw).append(contains("Andrew's phone bill with 3 phone calls"));
   }
 
   @Test

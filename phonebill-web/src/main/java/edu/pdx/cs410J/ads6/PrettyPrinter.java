@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * A simple dumper that prints a more user-friendly phone bill
@@ -39,13 +41,13 @@ public class PrettyPrinter extends TextDumper {
         out.close();
     }
 
-    public void filteredStreamDump(PhoneBill bill, Date b, Date e, PrintWriter pw) throws IOException {
-        pw.append(ConvertFirstLine(bill.toString()));
-        ArrayList<String> l = new ArrayList<String>(bill.getPhoneCalls(b,e));
-        for (String s : l){
-            pw.append(ConvertSecondLine(s,l.indexOf(s)));
+    public String filteredStreamDump(String s) {
+        String[] arr = s.split("\\r?\\n");
+        StringBuilder builder = new StringBuilder(ConvertFirstLine(arr[0]));
+        for (int x = 1; x < arr.length; ++x){
+            builder.append(ConvertSecondLine(arr[x],x));
         }
-
+        return builder.toString();
     }
 
     /**
