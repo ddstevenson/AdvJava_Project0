@@ -66,11 +66,6 @@ public class PhoneBillRestClient extends HttpRequestHelper
         return response.getContent();
     }
 
-    @VisibleForTesting
-    Response postToMyURL(Map<String, String> dictionaryEntries) throws IOException {
-      return post(this.url, dictionaryEntries);
-    }
-
     public void removeAllPhoneCalls() throws IOException {
       Response response = delete(this.url, Map.of());
       throwExceptionIfNotOkayHttpStatus(response);

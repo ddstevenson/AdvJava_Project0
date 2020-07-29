@@ -58,9 +58,10 @@ public class Project4IT extends InvokeMainTestCase {
         assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
         assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("Phone call from 503-245-2345 to 765-389-1273 from 02/27/2020 8:56 AM to 02/27/2020 10:27 AM"));
 
-        result = invokeMain("Dave", "02/27/2020", "8:56", "am", "02/27/2020", "10:27", "am");
-        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("asdf"));
+        result = invokeMain("-search", "Dave", "02/27/2020", "8:56", "am", "02/27/2020", "10:27", "am");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("Customer: Dave"));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("91"));
     }
 
     @Test
@@ -89,10 +90,10 @@ public class Project4IT extends InvokeMainTestCase {
     }
 
     @Test
-    public void Project4_Main_1Arg_Error() {
-        MainMethodResult result = invokeMain(data[1]);
-        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    public void Project4_Main_1Arg_Success() {
+        MainMethodResult result = invokeMain("asdfasdf");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("No phone records on file for customer."));
     }
 
     @Test
@@ -106,7 +107,7 @@ public class Project4IT extends InvokeMainTestCase {
     public void Project4_Main_8ArgMissingTime_Error() {
         MainMethodResult result = invokeMain(data[0], data[1],data[2],data[3],data[4],data[5], data[13],data[6]);
         assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments."));
     }
 
     @Test
@@ -140,14 +141,14 @@ public class Project4IT extends InvokeMainTestCase {
     public void Project4_Main_8ArgNoOptionsForgotFirstAM_Failure() {
         MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments."));
     }
 
     @Test
     public void Project4_Main_8ArgNoOptionsForgotSecondAM_Failure() {
         MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7]);
         assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments."));
     }
 
     @Test
@@ -182,14 +183,7 @@ public class Project4IT extends InvokeMainTestCase {
     public void Project4_Main_10ArgPrint_Failure() {
         MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14],data[0]);
         assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
-    }
-
-    @Test
-    public void Project4_Main_11ArgREADMEOutOfOrder_Failure() {
-        MainMethodResult result = invokeMain(data[0], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14], data[8]);
-        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Options must precede the arguments."));
     }
 
     @Test
@@ -205,13 +199,6 @@ public class Project4IT extends InvokeMainTestCase {
                 data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
         assertThat(result.getExitCode(), CoreMatchers.equalTo(0));
         assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("By Andrew Stevenson, for Advanced Programming"));
-    }
-
-    @Test
-    public void Project4_Main_13ArgTextFileOutOfOrder_Failure() {
-        MainMethodResult result = invokeMain(data[0], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14], data[8], data[9], data[10]);
-        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
     }
 
     @Test

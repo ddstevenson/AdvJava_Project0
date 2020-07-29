@@ -11,16 +11,24 @@ public class Project4 {
     public static void main(String... args) {
         IArgValidator val = new ArgValidator();
         String[] validated = val.validate(args);
-        PhoneCall call = new PhoneCall(validated);
+        boolean isEntry = isPresent(validated[0]);
+        isEntry &= isPresent(validated[1]);
+        isEntry &= isPresent(validated[2]);
+        isEntry &= isPresent(validated[3]);
+        isEntry &= isPresent(validated[4]);
+        PhoneCall call = null;
+        if(isEntry) {
+            call = new PhoneCall(validated);
 
-        // This validation isn't done in Validator
-        // because we don't convert the strings to
-        // dates until PhoneCall is instantiated
-        if(call.getStartTime().compareTo(call.getEndTime()) > 0){ // if start > end
-            System.err.println("Error: the start time is before the end time.");
-            System.err.println("Start Time: " + call.getStartTimeString());
-            System.err.println("End Time: " + call.getEndTimeString());
-            exit(1);
+            // This validation isn't done in Validator
+            // because we don't convert the strings to
+            // dates until PhoneCall is instantiated
+            if (call.getStartTime().compareTo(call.getEndTime()) > 0) { // if start > end
+                System.err.println("Error: the start time is before the end time.");
+                System.err.println("Start Time: " + call.getStartTimeString());
+                System.err.println("End Time: " + call.getEndTimeString());
+                exit(1);
+            }
         }
 
         PhoneBillRestClient client;
@@ -29,11 +37,6 @@ public class Project4 {
         else
             client = new PhoneBillRestClient(validated[7],Integer.parseInt(validated[8]));
 
-        boolean isEntry = isPresent(validated[0]);
-        isEntry &= isPresent(validated[1]);
-        isEntry &= isPresent(validated[2]);
-        isEntry &= isPresent(validated[3]);
-        isEntry &= isPresent(validated[4]);
         try {
             if (isEntry) {  // new phone bill is being added
                 client.addPhoneCall(validated[0], call);

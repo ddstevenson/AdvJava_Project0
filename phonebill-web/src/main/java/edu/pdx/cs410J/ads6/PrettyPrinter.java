@@ -43,6 +43,8 @@ public class PrettyPrinter extends TextDumper {
 
     public String filteredStreamDump(String s) {
         String[] arr = s.split("\\r?\\n");
+        if(arr.length <=1)
+            return "No phone records on file for customer.";
         StringBuilder builder = new StringBuilder(ConvertFirstLine(arr[0]));
         for (int x = 1; x < arr.length; ++x){
             builder.append(ConvertSecondLine(arr[x],x));

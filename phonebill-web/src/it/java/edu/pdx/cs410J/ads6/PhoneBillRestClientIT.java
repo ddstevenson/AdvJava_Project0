@@ -136,7 +136,7 @@ public class PhoneBillRestClientIT {
   @Test
   public void PhoneBillRestClient_getPhoneBill_noState_Success() throws IOException {
     String s = client.getPhoneBill(data1[0]);
-    assertThat(s, containsString("Customer: Andrew"));
+    assertThat(s, containsString("No phone records on file for customer."));
   }
 
 }

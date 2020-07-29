@@ -29,6 +29,8 @@ public class ArgValidator implements IArgValidator{
      */
     public String[]  validate(String[] args){
         String[] retval = new String[9];
+        int num_opt = 0;
+        int num_args = 0;
         boolean bPrint = false;
         boolean bPort = false;
         boolean bHost = false;
@@ -37,42 +39,54 @@ public class ArgValidator implements IArgValidator{
         if (args == null)
             exit_error("Missing command line arguments.", true);
 
-        // First we need to count & acknowledge which options were specified
-        for(int x = 0; x < min(args.length,7); ++x){ //max total 7 option strings in args[]
+        // First we need to count & acknowledge which options & args were specified
+        for(int x = 0; x < args.length; ++x){ //max total 7 option strings in args[]
             if(args[x] == null){
-                break; // catch this outcome below
+                exit_error("Null command line arguments.", true);
             } else if(args[x].equals("-README")){
                 exit_readme();
             } else if (args[x].equals("-print")){
+                if(num_args != 0)
+                    exit_error("Options must precede the arguments.", true);
                 bPrint = true;
+                ++num_opt;
             } else if (args[x].equals("-port")){
+                if(num_args != 0)
+                    exit_error("Options must precede the arguments.", true);
                 bPort = true;
+                ++num_opt;
             } else if (args[x].equals("-host")){
+                if(num_args != 0)
+                    exit_error("Options must precede the arguments.", true);
                 bHost = true;
+                ++num_opt;
             } else if (args[x].equals("-search")){
+                if(num_args != 0)
+                    exit_error("Options must precede the arguments.", true);
                 bSearch = true;
-            } else if ( !(x > 0 && (args[x - 1].equals("-port") || args[x - 1].equals("-host")))){
-                break;  // once we hit something that's not an option, we're done
+                ++num_opt;
+            } else if ((x > 0 && (args[x - 1].equals("-port") || args[x - 1].equals("-host")))){
+                if(num_args != 0)
+                    exit_error("Options must precede the arguments.", true);
+                ++num_opt;
+            } else {
+                ++num_args;
             }
         }
 
         if(bHost ^ bPort)
             exit_error("Either both host and port, or neither host nor port must be specified.", true);
 
-        // Now that we know which options were specified, we can verify the correct number of args were submitted
-        int num_opt_args = (bPrint) ? (1) : (0);
-        num_opt_args += (bPort) ? (4) : (0);            // Both or neither, since we're checking xor above
-        num_opt_args += (bSearch) ? (1) : (0);
-
         // magic number 1: 1 + 1 + 1 + 3 +3 = 9
         // magic number 2: 1 + 3 + 3 = 7
-        boolean isValid = (args.length >= 7 + num_opt_args && args.length <= 9 + num_opt_args);
+        // magic number 3: 1 = 1 (name only)
+        boolean isValid = (num_args == 1 || num_args == 9 || (num_args == 7 && bSearch));
         if(!isValid) {
             exit_error("Missing or incorrect command line arguments.", true);
         }
 
-        // Exactly right # of args are present, let's put the right args in the correct retval buckets
-        for(int ret_index = 0, args_index = 0; ret_index < 5 && args_index < args.length; ++args_index){
+        // Probably correct # of args are present, let's put them in retval buckets
+        for(int args_index = 0; args_index < args.length; ++args_index){
             if(args[args_index].equals("-print") ||
                     (args[args_index].equals("-host")) ||
                     (args[args_index].equals("-port")) ||
@@ -83,18 +97,20 @@ public class ArgValidator implements IArgValidator{
                 retval[8] = args[args_index];
             }  else if(args_index != 0 && args[args_index - 1].equals("-host")) {
                 retval[7] = args[args_index];
-            } else if(ret_index == 3 || ret_index == 4){ // compile dates & times into single field
-                if(retval[ret_index] == null){  // field is empty; set to date field
-                    retval[ret_index]=args[args_index];
-                } else if(args[args_index].length() > 2){ // process time field
-                    retval[ret_index] += (" " + args[args_index]);
-                } else { // process am/pm
-                    retval[ret_index] += (" " + args[args_index]);
-                    ++ret_index;
+            } else { // only on first arg should this be triggered; we'll take care of everything at once
+                retval[0] = args[args_index];
+                if(num_args == 9){
+                    retval[1] = args[args_index+1]; // caller
+                    retval[2] = args[args_index+2]; // calle3
+                    retval[3] = args[args_index+3] + " " + args[args_index+4] + " " +  args[args_index+5]; // caller
+                    retval[4] = args[args_index+6] +  " " + args[args_index+7] +  " " + args[args_index+8]; // calle3
+                } else if(num_args == 7){
+                    retval[3] = args[args_index+1] + " " +  args[args_index+2] +  " " + args[args_index+3]; // caller
+                    retval[4] = args[args_index+4] +  " " + args[args_index+5] + " " +  args[args_index+6]; // calle3
+                } else {
+                    assert num_args == 1 : "Assert failed: invalid arguments in ArgValidator.";
                 }
-            } else {
-                retval[ret_index]=args[args_index];
-                ++ret_index;
+                break;
             }
         }
         retval[5] = String.valueOf(bPrint);
@@ -102,17 +118,16 @@ public class ArgValidator implements IArgValidator{
 
         //Finally validate the contents of the arguments
         for(int ret_index = 0; ret_index < retval.length; ++ret_index){
-
-            if(retval[ret_index] == null)
-                continue;
-
             Pattern p;
             Matcher m;
             switch(ret_index){
                 case 0: // name
-                    // nothing to do here
+                    if(retval[ret_index] == null)
+                        retval[ret_index] = moveFirstNonEmpty(retval);
                     break;
                 case 1: // caller
+                    if(retval[ret_index] == null)
+                        continue;
                     if(!pattern_match("^\\d{3}-\\d{3}-\\d{4}$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted caller phone number.");
                         System.err.println("Was: " + retval[ret_index]);
@@ -121,6 +136,8 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 2: // callee
+                    if(retval[ret_index] == null)
+                        continue;
                     if(!pattern_match("^\\d{3}-\\d{3}-\\d{4}$",retval[ret_index])){
                         System.err.println("Error: Incorrectly formatted callee phone number.");
                         System.err.println("Was: " + retval[ret_index]);
@@ -129,6 +146,8 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 3: // begin date/time string
+                    if(retval[ret_index] == null)
+                        continue;
                     p = Pattern.compile("^(\\d{1,2})/(\\d{1,2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
                     m = p.matcher(retval[ret_index]);
                     if(!m.matches() || Integer.valueOf(m.group(4)) > 11 || Integer.valueOf(m.group(5)) > 60){
@@ -139,6 +158,8 @@ public class ArgValidator implements IArgValidator{
                     }
                     break;
                 case 4: // end date/time string
+                    if(retval[ret_index] == null)
+                        continue;
                     p = Pattern.compile("^(\\d{1,2})/(\\d{1,2})/(\\d{4}) (\\d{1,2}):(\\d{2}) ([AaPp][Mm])$");
                     m = p.matcher(retval[ret_index]);
                     if(!m.matches() || Integer.valueOf(m.group(4)) > 11 || Integer.valueOf(m.group(5)) > 60){
@@ -170,6 +191,21 @@ public class ArgValidator implements IArgValidator{
         }
 
         return retval;
+    }
+
+    /**
+     * @param retval The array to be searched starting at element 2
+     * @return The first (now-deleted) non-empty string in retval after element 2
+     */
+    private String moveFirstNonEmpty(String[] retval) {
+        for(int x = 1; x < retval.length; ++x){
+            if(retval[x] != null) {
+                String ret = retval[x];
+                retval[x] = null;
+                return ret;
+            }
+        }
+        return null;
     }
 
     /**
