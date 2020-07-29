@@ -110,8 +110,8 @@ public class PhoneBillRestClientIT {
     bill.addPhoneCall(call);
     client.addPhoneCall(data1[0], call);
     String s = client.getPhoneBill(data1[0]);
-    assertThat(s, containsString(bill.toString()));
-    assertThat(s, containsString(call.toString()));
+    assertThat(s, containsString("Customer: Andrew"));
+    assertThat(s, containsString("198577"));
   }
 
   @Test
@@ -127,54 +127,16 @@ public class PhoneBillRestClientIT {
     client.addPhoneCall(data1[0], call2);
     client.addPhoneCall(data1[0], call3);
     String s = client.getPhoneBill(data1[0]);
-    assertThat(s, containsString(bill.toString()));
-    assertThat(s, containsString(call1.toString()));
-    assertThat(s, containsString(call2.toString()));
-    assertThat(s, containsString(call3.toString()));
+    assertThat(s, containsString("Customer: Andrew"));
+    assertThat(s, containsString("198577"));
+    assertThat(s, containsString("198517"));
+    assertThat(s, containsString("198457"));
   }
 
   @Test
   public void PhoneBillRestClient_getPhoneBill_noState_Success() throws IOException {
-    PhoneBill bill = new PhoneBill(data1[0]);
     String s = client.getPhoneBill(data1[0]);
-    assertThat(s, containsString(bill.toString()));
+    assertThat(s, containsString("Customer: Andrew"));
   }
-
-  // The following were part of original test suite; they're being kept for future reference
-
-  /*
-  @Test
-  public void test0RemoveAllDictionaryEntries() throws IOException {
-    PhoneBillRestClient client = newPhoneBillRestClient();
-    client.removeAllDictionaryEntries();
-  }
-
-  @Test
-  public void test1EmptyServerContainsNoDictionaryEntries() throws IOException {
-    PhoneBillRestClient client = newPhoneBillRestClient();
-    Map<String, String> dictionary = client.getAllDictionaryEntries();
-    assertThat(dictionary.size(), equalTo(0));
-  }
-
-  @Test
-  public void test2DefineOneWord() throws IOException {
-    PhoneBillRestClient client = newPhoneBillRestClient();
-    String testWord = "TEST WORD";
-    String testDefinition = "TEST DEFINITION";
-    client.addDictionaryEntry(testWord, testDefinition);
-
-    String definition = client.getDefinition(testWord);
-    assertThat(definition, equalTo(testDefinition));
-  }
-
-  @Test
-  public void test4MissingRequiredParameterReturnsPreconditionFailed() throws IOException {
-    PhoneBillRestClient client = newPhoneBillRestClient();
-    HttpRequestHelper.Response response = client.postToMyURL(Map.of());
-    assertThat(response.getContent(), containsString(Messages.missingRequiredParameter("word")));
-    assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
-  }
-
-   */
 
 }

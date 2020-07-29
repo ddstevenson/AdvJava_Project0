@@ -20,7 +20,7 @@ public class ArgValidatorTest  {
     public void setUp() {
         // represents valid data
         data = new String[]{"-print", "-host", "the_name_of_the_host", "-port",
-                "number_of_port", "-search", "Andrew","122-234-2343","133-333-3333",
+                "8080", "-search", "Andrew","122-234-2343","133-333-3333",
                 "10/30/2020", "05:30", "pm", "03/17/2021", "03:07", "pm"};
 
         // valid data with no options

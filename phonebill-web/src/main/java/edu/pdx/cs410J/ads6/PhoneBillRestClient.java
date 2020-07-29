@@ -38,7 +38,8 @@ public class PhoneBillRestClient extends HttpRequestHelper
         map.put("customer",name);
         Response response = get(this.url, map);
         throwExceptionIfNotOkayHttpStatus(response);
-        return response.getContent();
+        PrettyPrinter printer = new PrettyPrinter();
+        return printer.filteredStreamDump(response.getContent());
     }
 
 

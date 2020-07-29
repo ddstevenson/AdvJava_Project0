@@ -63,7 +63,11 @@ public class ArgValidator implements IArgValidator{
         int num_opt_args = (bPrint) ? (1) : (0);
         num_opt_args += (bPort) ? (4) : (0);            // Both or neither, since we're checking xor above
         num_opt_args += (bSearch) ? (1) : (0);
-        if(args.length != (9 + num_opt_args)) { // magic number: 1 + 1 + 1 + 3 +3 = 9
+
+        // magic number 1: 1 + 1 + 1 + 3 +3 = 9
+        // magic number 2: 1 + 3 + 3 = 7
+        boolean isValid = (bSearch) ? (args.length >= 7 + num_opt_args && args.length <= 9 + num_opt_args) : (args.length == 9 + num_opt_args);
+        if(!isValid) {
             exit_error("Missing or incorrect command line arguments.", true);
         }
 
@@ -150,7 +154,12 @@ public class ArgValidator implements IArgValidator{
                     // Do nothing
                     break;
                 case 8: // port number
-                    // Do nothing
+                    try {
+                        if(retval[ret_index] != null && !retval[ret_index].equals(""))
+                            Integer.parseInt(retval[ret_index]);
+                    } catch(Exception e) {
+                        exit_error("Port number must be a numeric value.", true);
+                    }
                     break;
                 default: assert false: "Invalid index for retval in validate()";
             }
@@ -191,18 +200,18 @@ public class ArgValidator implements IArgValidator{
      */
     private void exit_usage(int code){
         System.out.println("usage: java edu.pdx.cs410J.ads6.Project4 [options] <args>" + System.lineSeparator() + 
-                "\\targs are (in this order):" + System.lineSeparator() + 
-                "\\t\\tcustomer \\tPerson whose phone bill we’re modeling" + System.lineSeparator() + 
-                "\\t\\tcallerNumber \\tPhone number of caller" + System.lineSeparator() + 
-                "\\t\\tcalleeNumber \\tPhone number of person who was called" + System.lineSeparator() + 
-                "\\t\\tstart \\tDate and time call began" + System.lineSeparator() + 
-                "\\tend \\tDate and time call ended" + System.lineSeparator() + 
-                "\\toptions are (options may appear in any order):" + System.lineSeparator() + 
-                "\\t\\t-host \\thostname Host computer on which the server runs" + System.lineSeparator() + 
-                "\\t\\t-port \\tport Port on which the server is listening" + System.lineSeparator() + 
-                "\\t\\t-search \\tPhone calls should be searched for" + System.lineSeparator() + 
-                "\\t\\t-print \\tPrints a description of the new phone call" + System.lineSeparator() + 
-                "\\t\\t-README \\tPrints a README for this project and exits");
+                "\targs are (in this order):" + System.lineSeparator() + 
+                "\t\tcustomer \t\tPerson whose phone bill we’re modeling" + System.lineSeparator() +
+                "\t\tcallerNumber \tPhone number of caller" + System.lineSeparator() + 
+                "\t\tcalleeNumber \tPhone number of person who was called" + System.lineSeparator() + 
+                "\t\tstart \t\t\tDate and time call began" + System.lineSeparator() +
+                "\t\tend \t\t\tDate and time call ended" + System.lineSeparator() +
+                "\toptions are (options may appear in any order):" + System.lineSeparator() + 
+                "\t\t-host \t\t\thostname Host computer on which the server runs" + System.lineSeparator() +
+                "\t\t-port \t\t\tport Port on which the server is listening" + System.lineSeparator() +
+                "\t\t-search \t\tPhone calls should be searched for" + System.lineSeparator() +
+                "\t\t-print \t\t\tPrints a description of the new phone call" + System.lineSeparator() +
+                "\t\t-README \t\tPrints a README for this project and exits");
         exit(code);
     }
 

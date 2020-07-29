@@ -26,20 +26,9 @@ public class Project4IT extends InvokeMainTestCase {
       client.removeAllDictionaryEntries();
     }
 */
-    @Test
-    public void test1NoCommandLineArguments() {
-        MainMethodResult result = invokeMain( Project4.class );
-        assertThat(result.getExitCode(), equalTo(1));
-        assertThat(result.getTextWrittenToStandardError(), containsString(Project4.MISSING_ARGS));
-    }
 
-    @Test
-    public void test2EmptyServer() {
-        MainMethodResult result = invokeMain( Project4.class, HOSTNAME, PORT );
-        assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
-        String out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(Messages.formatWordCount(0)));
-    }
+
+
 /*
     @Test(expected = PhoneBillRestException.class)
     public void test3NoDefinitionsThrowsAppointmentBookRestException() throws Throwable {
