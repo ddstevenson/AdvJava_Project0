@@ -1,16 +1,16 @@
 package edu.pdx.cs410J.ads6;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
-import edu.pdx.cs410J.ads6.PhoneBillRestClient.PhoneBillRestException;
+import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-
-import java.io.IOException;
+import java.io.File;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+
 
 /**
  * Tests the {@link Project4} class by invoking its main method with various arguments
@@ -19,44 +19,216 @@ import static org.hamcrest.Matchers.equalTo;
 public class Project4IT extends InvokeMainTestCase {
     private static final String HOSTNAME = "localhost";
     private static final String PORT = System.getProperty("http.port", "8080");
-/*
-    @Test
-    public void test0RemoveAllMappings() throws IOException {
-      PhoneBillRestClient client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
-      client.removeAllDictionaryEntries();
-    }
-*/
+    private String[] data;
+    private String fileContents, badFileContents;
 
-
-
-/*
-    @Test(expected = PhoneBillRestException.class)
-    public void test3NoDefinitionsThrowsAppointmentBookRestException() throws Throwable {
-        String word = "WORD";
-        try {
-            invokeMain(Project4.class, HOSTNAME, PORT, word);
-
-        } catch (Exception ex) {
-            throw ex.getCause();
-        }
+    @Before
+    public void setUp() {
+        // represents valid data - replace to test error messages
+        data = new String[]{"-print", "Andrew Stevenson","122-234-2343","133-333-3333", //0,1,2,3
+                "10/30/2020", "05:30", "03/17/2021", "03:57",                           //4,5,6,7
+                "-README", "-textFile", "test.txt", "-pretty", "bill.txt",             //8,9,10,11,12
+                "am", "pm"};                                                            //13,14
     }
 
+    @After
+    public void tearDown() {
+        File file = new File(data[10]);
+        file.delete();      // Intentionally ignore result; we don't care if the file existed or not
+        file = new File(data[12]);
+        file.delete();      // Intentionally ignore result; we don't care if the file existed or not
+        data = null;
+        fileContents = null;
+        badFileContents = null;
+    }
+    /**
+     * Invokes the main method of {@link Project4} with the given arguments.
+     */
+    private MainMethodResult invokeMain(String... args) {
+        return invokeMain( Project4.class, args );
+    }
+
+
     @Test
-    public void test4AddDefinition() {
-        String word = "WORD";
-        String definition = "DEFINITION";
+    public void Project1_Main_NoArgs_Error() {
+        MainMethodResult result = invokeMain();
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
 
-        MainMethodResult result = invokeMain( Project4.class, HOSTNAME, PORT, word, definition );
-        assertThat(result.getTextWrittenToStandardError(), result.getExitCode(), equalTo(0));
-        String out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(Messages.definedWordAs(word, definition)));
+    @Test
+    public void Project1_Main_NullArgs_Error() {
+        MainMethodResult result = invokeMain(null);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing command line arguments"));
+    }
 
-        result = invokeMain( Project4.class, HOSTNAME, PORT, word );
-        out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(Messages.formatDictionaryEntry(word, definition)));
+    @Test
+    public void Project1_Main_1Arg_Error() {
+        MainMethodResult result = invokeMain(data[1]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
 
-        result = invokeMain( Project4.class, HOSTNAME, PORT );
-        out = result.getTextWrittenToStandardOut();
-        assertThat(out, out, containsString(Messages.formatDictionaryEntry(word, definition)));
-    } */
+    @Test
+    public void Project1_Main_1ArgREADME_Success() {
+        MainMethodResult result = invokeMain(data[8]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("By Andrew Stevenson, for Advanced Programming"));
+    }
+
+    @Test
+    public void Project1_Main_8ArgMissingTime_Error() {
+        MainMethodResult result = invokeMain(data[0], data[1],data[2],data[3],data[4],data[5], data[13],data[6]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_10ArgPrettyMissingFileArg_Failure() {
+        MainMethodResult result = invokeMain(data[11], data[1],data[2],data[3],data[4],data[5], data[13],data[6], data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_10ArgTextMissingFileArg_Failure() {
+        MainMethodResult result = invokeMain(data[9], data[1],data[2],data[3],data[4],data[5], data[13],data[6], data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_9ArgNoOptions_Success() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+    }
+
+    @Test
+    public void Project1_Main_9ArgNoOptionsBackwardDates_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[6],data[7], data[14],data[4],data[5], data[13]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Error: the start time is before the end time"));
+    }
+
+    @Test
+    public void Project1_Main_8ArgNoOptionsForgotFirstAM_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_8ArgNoOptionsForgotSecondAM_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_9ArgNoOptionsBadBeginTime_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],"14:13", data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Error: Incorrectly formatted begin date/time."));
+    }
+
+    @Test
+    public void Project1_Main_9ArgNoOptionsBadEndTime_Failure() {
+        MainMethodResult result = invokeMain( data[1],data[2],data[3],data[4],data[5], data[13],data[6],"05:77", data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Error: Incorrectly formatted end date/time."));
+    }
+
+    @Test
+    public void Project1_Main_10ArgPrint_Success() {
+        MainMethodResult result = invokeMain(data[0], data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString(data[2]));
+    }
+
+    @Test
+    public void Project1_Main_11ArgREADME_Success() {
+        MainMethodResult result = invokeMain(data[8], data[0], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14] );
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("By Andrew Stevenson, for Advanced Programming"));
+    }
+
+    @Test
+    public void Project1_Main_10ArgPrint_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14],data[0]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_11ArgREADMEOutOfOrder_Failure() {
+        MainMethodResult result = invokeMain(data[0], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14], data[8]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_13ArgTextFile_Success() {
+        MainMethodResult result = invokeMain(data[0], data[8], data[9], data[10], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("By Andrew Stevenson, for Advanced Programming"));
+    }
+
+    @Test
+    public void Project1_Main_15ArgPrettyButREADME_Success() {
+        MainMethodResult result = invokeMain(data[0], data[8], data[9], data[10], data[11], data[12], data[1],
+                data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(0));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("By Andrew Stevenson, for Advanced Programming"));
+    }
+
+    @Test
+    public void Project1_Main_13ArgTextFileOutOfOrder_Failure() {
+        MainMethodResult result = invokeMain(data[0], data[1], data[2],data[3],data[4],data[5], data[13],data[6],data[7], data[14], data[8], data[9], data[10]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments"));
+    }
+
+    @Test
+    public void Project1_Main_BadCaller_Failure() {
+        MainMethodResult result = invokeMain(data[1],"asdfasdf",data[3],data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted caller phone number."));
+    }
+
+    @Test
+    public void Project1_Main_BadCallee_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],"asdfasdf",data[4],data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted callee phone number."));
+    }
+
+    @Test
+    public void Project1_Main_BadBeginDate_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],data[3],"asdf",data[5], data[13],data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted begin date/time."));
+    }
+
+    @Test
+    public void Project1_Main_BadBeginTime_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],"50:30:25", "am", data[6],data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted begin date/time."));
+    }
+
+    @Test
+    public void Project1_Main_BadEndDate_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5], data[13],"asdfasdf",data[7], data[14]);
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted end date/time."));
+    }
+
+    @Test
+    public void Project1_Main_BadEndTime_Failure() {
+        MainMethodResult result = invokeMain(data[1],data[2],data[3],data[4],data[5], data[13],data[6],"asdfasdfasdf", "am");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrectly formatted end date/time."));
+    }
+
 }

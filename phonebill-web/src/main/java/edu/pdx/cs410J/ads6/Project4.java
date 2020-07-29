@@ -24,7 +24,7 @@ public class Project4 {
         }
 
         PhoneBillRestClient client;
-        if(validated[7].equals(""))
+        if(!isPresent(validated[7]))
             client = new PhoneBillRestClient("localhost", 8080);
         else
             client = new PhoneBillRestClient(validated[7],Integer.parseInt(validated[8]));
