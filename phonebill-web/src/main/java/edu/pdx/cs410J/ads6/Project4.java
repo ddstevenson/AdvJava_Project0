@@ -40,13 +40,13 @@ public class Project4 {
                 if(str2bln(validated[5]))       // we only use the -print arg if new call
                     System.out.println(call.toString());
             } else { // searching for matching records
-                if(!isPresent(validated[3])){
+                if(!isPresent(validated[3])){   // If there's no date, search by customer only
                     System.out.print(client.getPhoneBill(validated[0]));
-                } else {
+                } else {    // Otherwise, we'll use the date-boxed search
                     System.out.print(client.getPhoneBill(validated[0], validated[3], validated[4]));
                 }
             }
-        }catch (Exception e){
+        }catch (Exception e){ // assume any io error is a problem with the host
             System.err.println("Error: the host \"" + validated[7] + ":" + validated[8] + " could not be reached.");
             exit(1);
         }

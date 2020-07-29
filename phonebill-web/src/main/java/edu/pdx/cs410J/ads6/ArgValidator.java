@@ -66,13 +66,13 @@ public class ArgValidator implements IArgValidator{
 
         // magic number 1: 1 + 1 + 1 + 3 +3 = 9
         // magic number 2: 1 + 3 + 3 = 7
-        boolean isValid = (bSearch) ? (args.length >= 7 + num_opt_args && args.length <= 9 + num_opt_args) : (args.length == 9 + num_opt_args);
+        boolean isValid = (args.length >= 7 + num_opt_args && args.length <= 9 + num_opt_args);
         if(!isValid) {
             exit_error("Missing or incorrect command line arguments.", true);
         }
 
         // Exactly right # of args are present, let's put the right args in the correct retval buckets
-        for(int ret_index = 0, args_index = 0; ret_index < 5; ++args_index){
+        for(int ret_index = 0, args_index = 0; ret_index < 5 && args_index < args.length; ++args_index){
             if(args[args_index].equals("-print") ||
                     (args[args_index].equals("-host")) ||
                     (args[args_index].equals("-port")) ||
@@ -102,6 +102,10 @@ public class ArgValidator implements IArgValidator{
 
         //Finally validate the contents of the arguments
         for(int ret_index = 0; ret_index < retval.length; ++ret_index){
+
+            if(retval[ret_index] == null)
+                continue;
+
             Pattern p;
             Matcher m;
             switch(ret_index){

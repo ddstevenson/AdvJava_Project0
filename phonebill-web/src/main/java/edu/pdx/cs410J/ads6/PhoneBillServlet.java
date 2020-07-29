@@ -167,23 +167,21 @@ public class PhoneBillServlet extends HttpServlet
 
         billSet = new HashMap<>();
 
-        PrintWriter pw = response.getWriter();
-        pw.println(Messages.allDictionaryEntriesDeleted());
-        pw.flush();
+
 
         response.setStatus(HttpServletResponse.SC_OK);
 
     }
 
-    /**
-     * Writes an error message about a missing parameter to the HTTP response.
-     *
-     * The text of the error message is created by {@link Messages#missingRequiredParameter(String)}
-     */
+    public static String missingRequiredParameter( String parameterName )
+    {
+        return String.format("The required parameter \"%s\" is missing", parameterName);
+    }
+
     private void missingRequiredParameter( HttpServletResponse response, String parameterName )
         throws IOException
     {
-        String message = Messages.missingRequiredParameter(parameterName);
+        String message = missingRequiredParameter(parameterName);
         response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, message);
     }
 
