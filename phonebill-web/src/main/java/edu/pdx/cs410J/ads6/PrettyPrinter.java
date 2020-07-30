@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.ads6;
 
 import edu.pdx.cs410J.AbstractPhoneBill;
+import edu.pdx.cs410J.PhoneBillDumper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,29 +18,11 @@ import java.util.stream.Stream;
  * A simple dumper that prints a more user-friendly phone bill
  * style line itemization
  */
-public class PrettyPrinter extends TextDumper {
+public class PrettyPrinter {
     final private String line1Match = "^(.+)'s .*";
     final private String line2Match = "Phone call from (\\d{3}\\-\\d{3}\\-\\d{4}) to (\\d{3}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
     final private String[] cols = new String[]{"%10s","%20s","%20s","%25s","%25s","%10s"};
     final private String[] headers = new String[]{"No.", "Date", "Time", "Caller", "Callee", "Minutes"};
-
-
-    /**
-     * @param abstractPhoneBill the name of the abstractPhoneBill object to dump to a file
-     * @throws IOException if file cannot be accessed
-     * @implNote this function must convert from text, back to phone call data. Inefficient.
-     */
-    @Override
-    public void dump(AbstractPhoneBill abstractPhoneBill) throws IOException {
-        FileOutputStream out  = new FileOutputStream(this.filename);
-        out.write(ConvertFirstLine(abstractPhoneBill.toString()).getBytes());
-        ArrayList<String> l = new ArrayList<String>(abstractPhoneBill.getPhoneCalls());
-
-        for (String s : l){
-            out.write(ConvertSecondLine(s,l.indexOf(s)).getBytes());
-        }
-        out.close();
-    }
 
     /**
      * @param s A string object representing the basic toString() output of a bill & its phone objects
@@ -55,6 +38,8 @@ public class PrettyPrinter extends TextDumper {
         }
         return builder.toString();
     }
+
+
 
     /**
      * @param s the phone call line string returned by getPhoneCalls()
