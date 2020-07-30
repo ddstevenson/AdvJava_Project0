@@ -47,6 +47,26 @@ public class Project4IT extends InvokeMainTestCase {
 
     // New tests for P4
     @Test
+    public void P4IT_ValidHost_Success() {
+        MainMethodResult result = invokeMain("-host", "localhost", "-port", "8080", "Dave");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+  }
+
+    @Test
+    public void P4IT_invalidHost_Failure() {
+        MainMethodResult result = invokeMain("-host", "localhost", "-port", "0", "Dave");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Error: the host \"localhost:0 could not be reached."));
+    }
+
+    @Test
+    public void P4IT_forgotEndDateArg_Failure() {
+        MainMethodResult result = invokeMain( "-search", "Dave");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Missing or incorrect command line arguments."));
+    }
+
+    @Test
     public void P4IT_Add2PhoneCallsPrintThenGet_Success() {
         MainMethodResult result = invokeMain("-print", "Dave", "503-245-9999", "765-389-9999", "02/27/2020",
                 "8:56", "am", "02/27/2020", "10:27", "am");
@@ -59,6 +79,11 @@ public class Project4IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("Phone call from 503-245-2345 to 765-389-1273 from 02/27/2020 8:56 AM to 02/27/2020 10:27 AM"));
 
         result = invokeMain("-search", "Dave", "02/27/2020", "8:56", "am", "02/27/2020", "10:27", "am");
+        assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("Customer: Dave"));
+        assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("91"));
+
+        result = invokeMain( "Dave");
         assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
         assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("Customer: Dave"));
         assertThat(result.getTextWrittenToStandardOut(), CoreMatchers.containsString("91"));

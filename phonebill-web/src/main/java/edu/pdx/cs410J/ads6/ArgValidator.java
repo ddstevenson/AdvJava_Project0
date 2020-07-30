@@ -80,7 +80,7 @@ public class ArgValidator implements IArgValidator{
         // magic number 1: 1 + 1 + 1 + 3 +3 = 9
         // magic number 2: 1 + 3 + 3 = 7
         // magic number 3: 1 = 1 (name only)
-        boolean isValid = (num_args == 1 || num_args == 9 || (num_args == 7 && bSearch));
+        boolean isValid = (num_args == 1 && !bSearch || num_args == 9 || (num_args == 7 && bSearch));
         if(!isValid) {
             exit_error("Missing or incorrect command line arguments.", true);
         }
