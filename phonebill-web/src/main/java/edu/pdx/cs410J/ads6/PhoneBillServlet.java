@@ -162,11 +162,7 @@ public class PhoneBillServlet extends HttpServlet
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain");
-
         billSet = new HashMap<>();
-
-
-
         response.setStatus(HttpServletResponse.SC_OK);
 
     }
