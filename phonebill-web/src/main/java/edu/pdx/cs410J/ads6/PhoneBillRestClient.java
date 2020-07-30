@@ -9,9 +9,7 @@ import java.util.Map;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
- * A helper class for accessing the rest client.  Note that this class provides
- * an example of how to make gets and posts to a URL.  You'll need to change it
- * to do something other than just send dictionary entries.
+ * Simple client for the RESTful web service exposed by PhoneBillServlet
  */
 public class PhoneBillRestClient extends HttpRequestHelper
 {
@@ -32,16 +30,28 @@ public class PhoneBillRestClient extends HttpRequestHelper
     }
 
 
+    /**
+     * @param name the name of the customer
+     * @return a formatted phone bill containing the items in the customer's current bill
+     * @throws IOException
+     */
     public String getPhoneBill(String name) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("customer",name);
         Response response = get(this.url, map);
         throwExceptionIfNotOkayHttpStatus(response);
         PrettyPrinter printer = new PrettyPrinter();
-        return printer.filteredStreamDump(response.getContent());
+        return printer.prettify(response.getContent());
     }
 
 
+    /**
+     * @param name Customer name
+     * @param begin begin date to search for
+     * @param end end date to seardh within
+     * @return String of items in customer's bill that start between begin and end
+     * @throws IOException
+     */
     public String getPhoneBill(String name, String begin, String end) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("customer",name);
@@ -50,10 +60,15 @@ public class PhoneBillRestClient extends HttpRequestHelper
         Response response = get(this.url, map);
         throwExceptionIfNotOkayHttpStatus(response);
         PrettyPrinter printer = new PrettyPrinter();
-        return printer.filteredStreamDump(response.getContent());
+        return printer.prettify(response.getContent());
     }
 
-    public String addPhoneCall(String customer, PhoneCall call) throws IOException {
+    /**
+     * @param customer name of the customer
+     * @param call the call to add to the customer's bill
+     * @throws IOException
+     */
+    public void addPhoneCall(String customer, PhoneCall call) throws IOException {
         Map<String, String> map = new HashMap<>();
         map.put("customer", customer);
         map.put("callerNumber",call.getCaller());
@@ -62,14 +77,20 @@ public class PhoneBillRestClient extends HttpRequestHelper
         map.put("end",call.getEndTimeString());
         Response response = post(this.url, map);
         throwExceptionIfNotOkayHttpStatus(response);
-        return response.getContent();
     }
 
+    /**
+     * @throws IOException
+     */
     public void removeAllPhoneCalls() throws IOException {
       Response response = delete(this.url, Map.of());
       throwExceptionIfNotOkayHttpStatus(response);
     }
 
+    /**
+     * @param response
+     * @return
+     */
     private Response throwExceptionIfNotOkayHttpStatus(Response response) {
       int code = response.getCode();
       if (code != HTTP_OK) {

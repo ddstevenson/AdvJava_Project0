@@ -7,10 +7,8 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * This servlet ultimately provides a REST API for working with an
- * <code>PhoneBill</code>.  However, in its current state, it is an example
- * of how to use HTTP and Java servlets to store simple dictionary of words
- * and their definitions.
+ * This servlet provides a REST API for working with an
+ * <code>PhoneBill</code>.
  */
 public class PhoneBillServlet extends HttpServlet
 {

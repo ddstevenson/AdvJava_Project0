@@ -57,10 +57,18 @@ public class Project4 {
         }
     }
 
+    /**
+     * @param str the string object to check
+     * @return true if the string is not empty or null; false otherwise
+     */
     private static boolean isPresent(String str){
         return str != null && !str.equals("");
     }
 
+    /**
+     * @param str the string to check for boolean-ness
+     * @return true if the string is "true"; false otherwise
+     */
     private static Boolean str2bln(String str){
         if(str == null)
             return false;

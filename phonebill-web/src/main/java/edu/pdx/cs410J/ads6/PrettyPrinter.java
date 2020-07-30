@@ -41,7 +41,11 @@ public class PrettyPrinter extends TextDumper {
         out.close();
     }
 
-    public String filteredStreamDump(String s) {
+    /**
+     * @param s A string object representing the basic toString() output of a bill & its phone objects
+     * @return A string object representing the pretty phone bill.
+     */
+    public String prettify(String s) {
         String[] arr = s.split("\\r?\\n");
         if(arr.length <=1)
             return "No phone records on file for customer.";
