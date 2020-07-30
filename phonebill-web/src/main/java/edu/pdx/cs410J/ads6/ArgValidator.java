@@ -124,7 +124,7 @@ public class ArgValidator implements IArgValidator{
             switch(ret_index){
                 case 0: // name
                     if(retval[ret_index] == null)
-                        retval[ret_index] = moveFirstNonEmpty(retval);
+                        exit_error("Error: customer name is required.", true);
                     break;
                 case 1: // caller
                     if(retval[ret_index] == null)
@@ -192,21 +192,6 @@ public class ArgValidator implements IArgValidator{
         }
 
         return retval;
-    }
-
-    /**
-     * @param retval The array to be searched starting at element 2
-     * @return The first (now-deleted) non-empty string in retval after element 2
-     */
-    private String moveFirstNonEmpty(String[] retval) {
-        for(int x = 1; x < retval.length; ++x){
-            if(retval[x] != null) {
-                String ret = retval[x];
-                retval[x] = null;
-                return ret;
-            }
-        }
-        return null;
     }
 
     /**
