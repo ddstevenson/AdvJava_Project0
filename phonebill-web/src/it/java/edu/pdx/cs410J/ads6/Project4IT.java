@@ -48,13 +48,13 @@ public class Project4IT extends InvokeMainTestCase {
     // New tests for P4
     @Test
     public void P4IT_ValidHost_Success() {
-        MainMethodResult result = invokeMain("-host", "localhost", "-port", "8080", "Dave");
+        MainMethodResult result = invokeMain("-host", HOSTNAME, "-port", PORT, "Dave");
         assertThat(result.getExitCode(), CoreMatchers.equalTo(null));
   }
 
     @Test
     public void P4IT_invalidHost_Failure() {
-        MainMethodResult result = invokeMain("-host", "localhost", "-port", "0", "Dave");
+        MainMethodResult result = invokeMain("-host", HOSTNAME, "-port", "0", "Dave");
         assertThat(result.getExitCode(), CoreMatchers.equalTo(1));
         assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Error: the host \"localhost:0 could not be reached."));
     }

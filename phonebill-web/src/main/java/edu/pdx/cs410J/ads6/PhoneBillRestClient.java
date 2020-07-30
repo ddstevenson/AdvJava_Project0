@@ -1,8 +1,7 @@
 package edu.pdx.cs410J.ads6;
 
-import com.google.common.annotations.VisibleForTesting;
-import edu.pdx.cs410J.web.HttpRequestHelper;
 
+import edu.pdx.cs410J.web.HttpRequestHelper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,16 +73,10 @@ public class PhoneBillRestClient extends HttpRequestHelper
     private Response throwExceptionIfNotOkayHttpStatus(Response response) {
       int code = response.getCode();
       if (code != HTTP_OK) {
-        throw new PhoneBillRestException(code);
+        throw new IllegalArgumentException();
       }
       return response;
     }
 
-    @VisibleForTesting
-    class PhoneBillRestException extends RuntimeException {
-      PhoneBillRestException(int httpStatusCode) {
-        super("Got an HTTP Status Code of " + httpStatusCode);
-      }
-    }
 
 }

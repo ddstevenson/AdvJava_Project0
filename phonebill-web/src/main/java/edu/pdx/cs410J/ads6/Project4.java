@@ -7,6 +7,8 @@ import static java.lang.System.exit;
  * Phone Bill server using REST.
  */
 public class Project4 {
+    private static final String HOSTNAME = "localhost";
+    private static final String PORT = System.getProperty("http.port", "8080");
 
     public static void main(String... args) {
         IArgValidator val = new ArgValidator();
@@ -33,7 +35,7 @@ public class Project4 {
 
         PhoneBillRestClient client;
         if(!isPresent(validated[7]))
-            client = new PhoneBillRestClient("localhost", 8080);
+            client = new PhoneBillRestClient(HOSTNAME, Integer.parseInt(PORT));
         else
             client = new PhoneBillRestClient(validated[7],Integer.parseInt(validated[8]));
 

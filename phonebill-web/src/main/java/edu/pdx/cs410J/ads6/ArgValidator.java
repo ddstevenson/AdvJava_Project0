@@ -102,6 +102,7 @@ public class ArgValidator implements IArgValidator{
                 if(num_args == 9){
                     retval[1] = args[args_index+1]; // caller
                     retval[2] = args[args_index+2]; // calle3
+
                     retval[3] = args[args_index+3] + " " + args[args_index+4] + " " +  args[args_index+5]; // caller
                     retval[4] = args[args_index+6] +  " " + args[args_index+7] +  " " + args[args_index+8]; // calle3
                 } else if(num_args == 7){
