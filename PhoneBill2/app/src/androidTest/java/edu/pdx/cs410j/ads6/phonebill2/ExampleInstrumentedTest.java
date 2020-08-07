@@ -1,4 +1,4 @@
-package edu.pdx.cs410j.ads6.phonebill;
+package edu.pdx.cs410j.ads6.phonebill2;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("edu.pdx.cs410j.ads6.phonebill", appContext.getPackageName());
+        assertEquals("edu.pdx.cs410j.ads6.phonebill2", appContext.getPackageName());
     }
 }
