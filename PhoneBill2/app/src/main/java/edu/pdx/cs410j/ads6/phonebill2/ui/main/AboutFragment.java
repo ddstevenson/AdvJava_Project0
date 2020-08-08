@@ -1,10 +1,13 @@
-package edu.pdx.cs410j.ads6.phonebill2;
+package edu.pdx.cs410j.ads6.phonebill2.ui.main;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.List;
+
+import edu.pdx.cs410j.ads6.phonebill2.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +30,7 @@ public class AboutFragment extends Fragment {
 
     String UserTypedText;
 
+    private AboutFragmentViewModel mViewModel;
     EditText editTextTextPersonName;
     TextView label;
     TextWatcher tw;
@@ -59,13 +67,26 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        this.mViewModel = ViewModelProviders.of(this).get(AboutFragmentViewModel.class);
+        // TODO: Use the ViewModel
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        AboutFragmentViewModel model = new ViewModelProvider(this).get(AboutFragmentViewModel.class);
+        model.getNames().observe(this, new Observer<List<String>>() { // no lambdas in this ver
+            @Override
+            public void onChanged(List<String> names) {
+                label.setText('a');
+            }
+        });
     }
 
     @Override
