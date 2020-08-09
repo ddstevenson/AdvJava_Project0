@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.AboutFragment">
+    tools:context=".ui.main.DetailFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -26,20 +26,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/DetailLabel"
+                android:id="@+id/DetailLabel1"
                 android:layout_width="match_parent"
-                android:layout_height="153dp" />
-
-            <EditText
-                android:id="@+id/editTextTextPersonName"
-                style="@style/Base.Widget.MaterialComponents.TextInputEditText"
-                android:layout_width="match_parent"
-                android:layout_height="243dp"
-                android:ems="10"
-                android:hint="@string/text_hint"
-                android:inputType="textPersonName"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                tools:text="@tools:sample/lorem" />
+                android:layout_height="153dp"
+                android:text="empty" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

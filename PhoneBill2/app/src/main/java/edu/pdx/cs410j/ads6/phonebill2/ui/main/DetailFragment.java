@@ -1,35 +1,29 @@
 package edu.pdx.cs410j.ads6.phonebill2.ui.main;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
-
+import edu.pdx.cs410j.ads6.phonebill2.MainActivity;
 import edu.pdx.cs410j.ads6.phonebill2.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AboutFragment#newInstance} factory method to
+ * Use the {@link DetailFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AboutFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
     AboutFragmentViewModel mViewModel;
-
-    private EditText editTextTextPersonName;
-    private TextView label;
-    private TextWatcher tw;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,7 +34,7 @@ public class AboutFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AboutFragment() {
+    public DetailFragment() {
         // Required empty public constructor
     }
 
@@ -53,8 +47,8 @@ public class AboutFragment extends Fragment {
      * @return A new instance of fragment AboutFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AboutFragment newInstance(String param1, String param2) {
-        AboutFragment fragment = new AboutFragment();
+    public static DetailFragment newInstance(String param1, String param2) {
+        DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -75,39 +69,29 @@ public class AboutFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        final TextView label = view.findViewById(R.id.DetailLabel1);
+        label.setText("This is set from onViewCreated().");
+        mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
 
-        editTextTextPersonName = view.findViewById(R.id.editTextTextPersonName);
-        label = view.findViewById(R.id.DetailLabel);
-        label.setText("blah blah blah");
-
-        tw = new TextWatcher() {
+        mViewModel.getName().observe(requireActivity(), new Observer<String>() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onChanged(String s) {
+               label.setText(s);
             }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+        });
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                label.setText(s.toString());
-                mViewModel.setName(s.toString());
-            }
-        };
-
-        editTextTextPersonName.addTextChangedListener(tw);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        View retval = inflater.inflate(R.layout.fragment_detail, container, false);
+        return retval;
     }
 }

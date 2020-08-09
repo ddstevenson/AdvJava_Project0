@@ -6,6 +6,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,9 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import edu.pdx.cs410j.ads6.phonebill2.ui.main.AboutFragmentViewModel;
 import edu.pdx.cs410j.ads6.phonebill2.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = findViewById(R.id.fab);
-
 
 
         fab.setOnClickListener(new View.OnClickListener() {
