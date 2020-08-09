@@ -1,12 +1,14 @@
 package edu.pdx.cs410j.ads6.phonebill2.ui.main;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import edu.pdx.cs410j.ads6.phonebill2.R;
 
@@ -14,7 +16,7 @@ import edu.pdx.cs410j.ads6.phonebill2.R;
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2,R.string.tab_text_3, R.string.tab_text_4};
