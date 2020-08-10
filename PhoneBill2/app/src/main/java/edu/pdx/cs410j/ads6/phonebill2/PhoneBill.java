@@ -76,4 +76,14 @@ public class PhoneBill{
         }
         return retval.toString();
     }
+
+    public String toString(Date b, Date e){
+        Collection<String> calls = getPhoneCalls(b,e);
+        StringBuilder retval = new StringBuilder(getCustomer()+"'s phone bill with "+ calls.size() + " calls.");
+        for (String line : calls){
+            retval.append(System.lineSeparator());
+            retval.append(line);
+        }
+        return retval.toString();
+    }
 }
