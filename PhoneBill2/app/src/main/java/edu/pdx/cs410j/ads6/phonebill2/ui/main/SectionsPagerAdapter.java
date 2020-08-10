@@ -1,13 +1,11 @@
 package edu.pdx.cs410j.ads6.phonebill2.ui.main;
 
 import android.content.Context;
-import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import edu.pdx.cs410j.ads6.phonebill2.R;
@@ -32,9 +30,9 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
         switch(position){
-            case 0:
-                return AboutFragment.newInstance("hello"," world");
             case 1:
+                return NewCallFragment.newInstance("hello"," world");
+            case 2:
                 return DetailFragment.newInstance("goodbye"," moon");
             default:
                 return PlaceholderFragment.newInstance(position + 1);

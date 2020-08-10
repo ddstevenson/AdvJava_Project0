@@ -19,10 +19,10 @@ import edu.pdx.cs410j.ads6.phonebill2.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AboutFragment#newInstance} factory method to
+ * Use the {@link NewCallFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AboutFragment extends Fragment {
+public class NewCallFragment extends Fragment {
 
     AboutFragmentViewModel mViewModel;
 
@@ -32,15 +32,15 @@ public class AboutFragment extends Fragment {
 
     private static final String VIEW_MODEL_STATE = "AboutFragment";
 
-    public AboutFragment() {
+    public NewCallFragment() {
         // Required empty public constructor
     }
 
     /**
      * @return A new instance of fragment AboutFragment.
      */
-    public static AboutFragment newInstance(String param1, String param2) {
-        AboutFragment fragment = new AboutFragment();
+    public static NewCallFragment newInstance(String param1, String param2) {
+        NewCallFragment fragment = new NewCallFragment();
         return fragment;
     }
 
@@ -73,9 +73,9 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        editTextTextPersonName = view.findViewById(R.id.editTextTextPersonName);
-        label = view.findViewById(R.id.DetailLabel);
-        label.setText("blah blah blah");
+        editTextTextPersonName = view.findViewById(R.id.editCustomer);
+        //label = view.findViewById(R.id.DetailLabel);
+        //label.setText("blah blah blah");
         mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
         tw = new TextWatcher() {
             @Override
@@ -88,7 +88,7 @@ public class AboutFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                label.setText(s.toString());
+                //label.setText(s.toString());
                 mViewModel.setName(s.toString());
             }
         };
@@ -101,6 +101,6 @@ public class AboutFragment extends Fragment {
                              Bundle savedInstanceState) {
         if(savedInstanceState != null)
             mViewModel.setName(savedInstanceState.get(VIEW_MODEL_STATE).toString());
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        return inflater.inflate(R.layout.fragment_new_call, container, false);
     }
 }
