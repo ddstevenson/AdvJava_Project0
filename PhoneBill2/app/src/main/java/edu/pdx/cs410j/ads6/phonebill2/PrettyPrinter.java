@@ -1,31 +1,24 @@
 package edu.pdx.cs410j.ads6.phonebill2;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * A simple dumper that prints a more user-friendly phone bill
  * style line itemization
  */
 public class PrettyPrinter {
-    final private String line1Match = "^(.+)'s .*";
-    final private String line2Match = "Phone call from (\\d{3}\\-\\d{3}\\-\\d{4}) to (\\d{3}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
-    final private String[] cols = new String[]{"%10s","%20s","%20s","%25s","%25s","%10s"};
-    final private String[] headers = new String[]{"No.", "Date", "Time", "Caller", "Callee", "Minutes"};
+    final static private String line1Match = "^(.+)'s .*";
+    final static private String line2Match = "Phone call from (\\d{3}\\-\\d{3}\\-\\d{4}) to (\\d{3}\\-\\d{3}\\-\\d{4}) from (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm]) to (\\d{1,2}\\/\\d{2}\\/\\d{4} \\d{1,2}:\\d{2} [AaPp][Mm])";
+    final static private String[] cols = new String[]{"%10s","%20s","%20s","%25s","%25s","%10s"};
+    final static private String[] headers = new String[]{"No.", "Date", "Time", "Caller", "Callee", "Minutes"};
 
     /**
      * @param s A string object representing the basic toString() output of a bill & its phone objects
      * @return A string object representing the pretty phone bill.
      */
-    public String prettify(String s) {
+    public static String prettify(String s) {
         String[] arr = s.split("\\r?\\n");
         if(arr.length <=1)
             return "No phone records on file for customer.";
@@ -42,14 +35,16 @@ public class PrettyPrinter {
      * @param s the phone call line string returned by getPhoneCalls()
      * @return the pretty string representation of s
      */
-    private String ConvertFirstLine(String s){
-        Pattern p = Pattern.compile(this.line1Match);
+    private static String ConvertFirstLine(String s){
+        Pattern p = Pattern.compile(line1Match);
         Matcher m = p.matcher(s);
         m.find();
         assert m.matches() : "Assert Failed: invalid string passed to ConvertFirstLine()";
         StringBuilder retval = new StringBuilder();
         retval.append("Customer: ").append(m.group(1)).append(System.lineSeparator()+System.lineSeparator());
         for(int x = 0; x < cols.length; ++x){
+            if(x==3)
+                retval.append(System.lineSeparator());
             retval.append(String.format(cols[x],headers[x]));
         }
         retval.append(System.lineSeparator());
@@ -60,7 +55,7 @@ public class PrettyPrinter {
      * @param num the line number of the item of s
      * @return the pretty string representation of s
      */
-    private String ConvertSecondLine(String s, int num){
+    private static String ConvertSecondLine(String s, int num){
         Pattern p = Pattern.compile(line2Match);
         Matcher m = p.matcher(s);
         m.find();
@@ -71,9 +66,10 @@ public class PrettyPrinter {
         DateFormat dformat = DateFormat.getDateInstance(DateFormat.LONG);
         DateFormat tformat = DateFormat.getTimeInstance(DateFormat.LONG);
         StringBuilder retval = new StringBuilder();
-        retval.append(String.format(cols[0], Integer.toString(num)));
+        retval.append(String.format(cols[0], num));
         retval.append(String.format(cols[1], dformat.format(call.getStartTime())));
         retval.append(String.format(cols[2], tformat.format(call.getStartTime())));
+        retval.append(System.lineSeparator());
         retval.append(String.format(cols[3], m.group(1)));
         retval.append(String.format(cols[4], m.group(2)));
         retval.append(String.format(cols[5], (call.getEndTime().getTime() - call.getStartTime().getTime())/(1000*60) ));

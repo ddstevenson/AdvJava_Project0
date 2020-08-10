@@ -13,10 +13,11 @@
     <string name="start_label">Phone Call Begin</string>
     <string name="date_label">Date</string>
     <string name="time_label">Time</string>
+    <string name="am_label">In the AM?</string>
     <string name="end_label">Phone Call End</string>
 
     <string name="customer_hint">Example: John Doe</string>
-    <string name="phone_hint">0000000000</string>
+    <string name="phone_hint">000-000-0000</string>
     <string name="date_hint">mm/dd/yyyy</string>
     <string name="time_hint">hh:mm</string>
 
@@ -24,4 +25,9 @@
     <string name="cancel_button">Clear Form</string>
 
     <string name="pretty_bill_hint">Enter a customer name above to see that customer\'s bill.</string>
+    <string name="readme_text">
+        "Welcome to the Phone Bill for Android!\n\n"
+
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+    </string>
 </resources>

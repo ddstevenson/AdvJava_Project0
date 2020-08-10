@@ -4,22 +4,31 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class BillDataViewModel extends ViewModel {
-    private MutableLiveData<String> names;
+import java.util.HashMap;
+import java.util.Map;
 
-    public void setName(String s){
+import edu.pdx.cs410j.ads6.phonebill2.PhoneBill;
+
+public class BillDataViewModel extends ViewModel {
+    private MutableLiveData<Map<String, PhoneBill>> bills;
+
+    public void addBill(String s, PhoneBill bill){
         init();
-        names.setValue(s);
+        Map<String, PhoneBill> setval = bills.getValue();
+        assert setval != null;
+        setval.put(s,bill);
+        bills.setValue(setval);
     }
 
-    public LiveData<String> getName(){
+    public LiveData<Map<String, PhoneBill>> getBills(){
         init();
-        return names;
+        return bills;
     }
 
     private void init(){
-        if (names == null) {
-            names = new MutableLiveData<>("");
+        if (bills == null) {
+            Map<String, PhoneBill> data = new HashMap<>();
+            bills = new MutableLiveData<>(data);
         }
     }
 }

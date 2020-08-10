@@ -33,7 +33,9 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return NewCallFragment.newInstance("hello"," world");
             case 2:
-                return PrettyBillFragment.newInstance("goodbye"," moon");
+                return PrettyBillFragment.newInstance();
+            case 3:
+                return SearchFragment.newInstance();
             default:
                 return PlaceholderFragment.newInstance(position + 1);
         }

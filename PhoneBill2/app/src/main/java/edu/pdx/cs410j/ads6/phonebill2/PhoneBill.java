@@ -65,4 +65,15 @@ public class PhoneBill{
         }
         return retval;
     }
+
+    @Override
+    public String toString(){
+        Collection<String> calls = getPhoneCalls();
+        StringBuilder retval = new StringBuilder(getCustomer()+"'s phone bill with "+ calls.size() + " calls.");
+        for (String line : calls){
+            retval.append(System.lineSeparator());
+            retval.append(line);
+        }
+        return retval.toString();
+    }
 }

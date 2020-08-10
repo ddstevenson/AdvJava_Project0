@@ -111,6 +111,13 @@
                 android:hint="@string/time_hint"
                 android:inputType="time" />
 
+            <Switch
+                android:id="@+id/editBeginAM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/am_label" />
+
             <TextView
                 android:id="@+id/EndLabel"
                 android:layout_width="match_parent"
@@ -151,6 +158,17 @@
                 android:hint="@string/time_hint"
                 android:inputType="time" />
 
+            <Switch
+                android:id="@+id/editEndAM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/am_label" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="37dp" />
+
             <Button
                 android:id="@+id/submitButton"
                 android:layout_width="match_parent"
@@ -162,6 +180,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel_button" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="75dp" />
 
         </LinearLayout>
     </ScrollView>

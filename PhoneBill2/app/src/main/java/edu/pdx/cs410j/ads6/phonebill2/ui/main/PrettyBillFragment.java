@@ -1,9 +1,13 @@
 package edu.pdx.cs410j.ads6.phonebill2.ui.main;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.Map;
+
+import edu.pdx.cs410j.ads6.phonebill2.PhoneBill;
+import edu.pdx.cs410j.ads6.phonebill2.PrettyPrinter;
 import edu.pdx.cs410j.ads6.phonebill2.R;
 
 /**
@@ -21,21 +29,14 @@ import edu.pdx.cs410j.ads6.phonebill2.R;
 public class PrettyBillFragment extends Fragment {
 
     BillDataViewModel mViewModel;
+    EditText editCustomer2;
+    TextView prettyBillLabel;
 
     public PrettyBillFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AboutFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PrettyBillFragment newInstance(String param1, String param2) {
+    public static PrettyBillFragment newInstance() {
         PrettyBillFragment fragment = new PrettyBillFragment();
         return fragment;
     }
@@ -54,18 +55,45 @@ public class PrettyBillFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //final TextView label = view.findViewById(R.id.DetailLabel1);
-        // label.setText("This is set from onViewCreated().");
+        editCustomer2 = view.findViewById(R.id.editCustomer2);
+        prettyBillLabel = view.findViewById(R.id.prettyBillLabel);
         mViewModel = new ViewModelProvider(requireActivity()).get(BillDataViewModel.class);
 
-        mViewModel.getName().observe(requireActivity(), new Observer<String>() {
+        mViewModel.getBills().observe(requireActivity(), new Observer<Map<String,PhoneBill>>() {
             @Override
-            public void onChanged(String s) {
-               //label.setText(s);
+            public void onChanged(Map<String,PhoneBill> s) {
+                PhoneBill bill = s.get(editCustomer2.getText().toString());
+                if (bill == null)
+                    prettyBillLabel.setText("No results.");
+                else
+                    prettyBillLabel.setText(PrettyPrinter.prettify(bill.toString()));
             }
 
         });
 
+        TextWatcher tw = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Map<String, PhoneBill> map = mViewModel.getBills().getValue();
+                PhoneBill bill = map.get(editCustomer2.getText().toString());
+                String setval;
+                if(bill == null)
+                    setval = "No results.";
+                else
+                    setval = bill.toString();
+                prettyBillLabel.setText(PrettyPrinter.prettify(setval));
+            }
+        };
+
+        editCustomer2.addTextChangedListener(tw);
     }
 
     @Override

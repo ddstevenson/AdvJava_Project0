@@ -114,4 +114,11 @@ public class PhoneCall implements Comparable<PhoneCall>{
     int st = this.start.compareTo(o.start);
     return (st != 0) ? st : this.end.compareTo(o.end);
   }
+
+  @Override
+  public String toString(){
+    return "Phone call from " + this.calleeNumber + " to " +
+            this.calleeNumber + " from " + this.getStartTimeString() +
+            " to " + this.getEndTimeString();
+  }
 }
