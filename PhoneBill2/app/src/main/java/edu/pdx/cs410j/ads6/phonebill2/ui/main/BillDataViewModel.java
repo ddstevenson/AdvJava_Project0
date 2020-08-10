@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class AboutFragmentViewModel extends ViewModel {
+public class BillDataViewModel extends ViewModel {
     private MutableLiveData<String> names;
 
     public void setName(String s){

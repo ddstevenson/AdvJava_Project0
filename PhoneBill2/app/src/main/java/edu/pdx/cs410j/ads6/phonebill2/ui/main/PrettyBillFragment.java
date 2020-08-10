@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,14 +15,14 @@ import edu.pdx.cs410j.ads6.phonebill2.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DetailFragment#newInstance} factory method to
+ * Use the {@link PrettyBillFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DetailFragment extends Fragment {
+public class PrettyBillFragment extends Fragment {
 
-    AboutFragmentViewModel mViewModel;
+    BillDataViewModel mViewModel;
 
-    public DetailFragment() {
+    public PrettyBillFragment() {
         // Required empty public constructor
     }
 
@@ -36,8 +35,8 @@ public class DetailFragment extends Fragment {
      * @return A new instance of fragment AboutFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
-        DetailFragment fragment = new DetailFragment();
+    public static PrettyBillFragment newInstance(String param1, String param2) {
+        PrettyBillFragment fragment = new PrettyBillFragment();
         return fragment;
     }
 
@@ -57,7 +56,7 @@ public class DetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //final TextView label = view.findViewById(R.id.DetailLabel1);
         // label.setText("This is set from onViewCreated().");
-        mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity()).get(BillDataViewModel.class);
 
         mViewModel.getName().observe(requireActivity(), new Observer<String>() {
             @Override

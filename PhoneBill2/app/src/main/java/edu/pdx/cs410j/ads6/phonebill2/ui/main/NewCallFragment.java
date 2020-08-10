@@ -24,7 +24,7 @@ import edu.pdx.cs410j.ads6.phonebill2.R;
  */
 public class NewCallFragment extends Fragment {
 
-    AboutFragmentViewModel mViewModel;
+    BillDataViewModel mViewModel;
 
     private EditText editTextTextPersonName;
     private TextView label;
@@ -52,7 +52,7 @@ public class NewCallFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity()).get(BillDataViewModel.class);
         if(savedInstanceState != null)
             mViewModel.setName(savedInstanceState.get(VIEW_MODEL_STATE).toString());
     }
@@ -76,7 +76,7 @@ public class NewCallFragment extends Fragment {
         editTextTextPersonName = view.findViewById(R.id.editCustomer);
         //label = view.findViewById(R.id.DetailLabel);
         //label.setText("blah blah blah");
-        mViewModel = new ViewModelProvider(requireActivity()).get(AboutFragmentViewModel.class);
+        mViewModel = new ViewModelProvider(requireActivity()).get(BillDataViewModel.class);
         tw = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
