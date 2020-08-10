@@ -26,12 +26,33 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(5);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        getState();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle bundle) {
-        // manny.saveFragmentInstanceState()
-        super.onSaveInstanceState(bundle);
+    public void onResume() {
+        getState();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        putState();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        putState();
+        super.onDestroy();
+    }
+
+    private void getState(){
+
+    }
+
+    private void putState(){
+
     }
 
 }

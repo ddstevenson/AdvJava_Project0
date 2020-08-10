@@ -31,4 +31,16 @@ public class BillDataViewModel extends ViewModel {
             bills = new MutableLiveData<>(data);
         }
     }
+
+    public boolean hasState(){
+        return (bills != null && bills.getValue() != null);
+    }
+
+    public void addMap(Map<String, PhoneBill> m){
+        if (bills == null){
+            bills = new MutableLiveData<Map<String, PhoneBill>>(m);
+        } else {
+            bills.setValue(m);
+        }
+    }
 }
