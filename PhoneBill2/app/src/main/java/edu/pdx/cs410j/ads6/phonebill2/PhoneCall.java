@@ -1,5 +1,6 @@
 package edu.pdx.cs410j.ads6.phonebill2;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,7 +9,7 @@ import java.util.Date;
 /**
  * PhoneCall class: stores and retrieves information about an individual phone call record.
  */
-public class PhoneCall implements Comparable<PhoneCall>{
+public class PhoneCall implements Comparable<PhoneCall>, Serializable {
 
   final private String callerNumber;
   final private String calleeNumber;

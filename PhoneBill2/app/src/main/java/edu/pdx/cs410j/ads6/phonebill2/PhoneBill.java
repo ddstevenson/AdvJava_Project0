@@ -1,12 +1,13 @@
 package edu.pdx.cs410j.ads6.phonebill2;
 
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Class representing an entire phone bill. To be expanded in future iterations.
  */
-public class PhoneBill{
+public class PhoneBill implements Serializable {
     private List<PhoneCall> calls;
     private String customer;
 
